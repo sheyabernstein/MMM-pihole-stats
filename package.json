@@ -1,0 +1,19 @@
+{
+  "name": "mmm-pihole-stats",
+  "version": "1.0.0",
+  "description": "Pi-Hole stats for MagicMirror2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sheyabernstein/mmm-pihole-stats.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "Pi-Hole",
+  ],
+  "author": "sheyabernstein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sheyabernstein/mmm-pihole-stats/issues"
+  },
+  "homepage": "https://github.com/sheyabernstein/mmm-pihole-stats#readme"
+}
