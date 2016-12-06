@@ -11,20 +11,13 @@ Module.register("MMM-pihole-stats", {
 	defaults: {
 		apiURL: "http://pi-hole/admin/api.php",
 		showSources: true,
+		showSourceHostnameOnly: true,
 
 		updateInterval: 10 * 60 * 1000, // every 10 minutes
 		animationSpeed: 1000,
 
 		retryDelay: 2500,
 		initialLoadDelay: 0,
-	},
-
-	// Define required translations.
-	getTranslations: function() {
-		// The translations for the defaut modules are defined in the core translation files.
-		// Therefor we can just return false. Otherwise we should have returned a dictionairy.
-		// If you're trying to build yiur own module including translations, check out the documentation.
-		return false;
 	},
 
 	// Define start sequence.
@@ -52,13 +45,13 @@ Module.register("MMM-pihole-stats", {
 		}
 
 		var header = document.createElement("div")
-		header.className = "small light";
+		header.className = "small bright";
 		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)'
 		wrapper.appendChild(header);
 
 		if (this.config.showSources) {
 			var table = document.createElement("table");
-			table.className = "small";
+			table.className = "xsmall light";
 			wrapper.appendChild(table);
 
 			var thead = document.createElement("thead");
@@ -80,6 +73,18 @@ Module.register("MMM-pihole-stats", {
 
 			for (var source in this.top_sources) {
 				var adCount = this.top_sources[source];
+				
+				if (this.config.showSourceHostnameOnly) {
+					var rx = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/
+					var ip = source.substring(source.lastIndexOf('(') + 1, source.lastIndexOf(')'));
+					
+					if (rx.test(ip)) {
+						hostname = source.substring(0, source.lastIndexOf('('))
+						if (hostname.length) {
+							source = hostname;
+						}
+					}
+				}
 
 				var row = document.createElement("tr");
 				tbody.appendChild(row);
@@ -93,6 +98,11 @@ Module.register("MMM-pihole-stats", {
 				row.appendChild(countCell);
 			}
 		}
+
+		var footer = document.createElement("div")
+		footer.className = "xsmall";
+		footer.innerHTML = this.dns_queries_today + ' DNS queries, ' + this.domains_being_blocked + ' domains blacklisted.'
+		wrapper.appendChild(footer);
 
 		return wrapper;
 	},
