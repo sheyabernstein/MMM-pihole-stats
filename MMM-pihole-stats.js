@@ -107,7 +107,7 @@ Module.register("MMM-pihole-stats", {
 		return wrapper;
 	},
 
-	updateSummary: function() {
+	updateStats: function() {
 		var url = this.config.apiURL + '?summary';
 		var self = this;
 		var retry = true;
@@ -162,8 +162,7 @@ Module.register("MMM-pihole-stats", {
 
 		var self = this
 		setTimeout(function() {
-			self.updateSummary();
-			console.log('getting summary')
+			self.updateStats();
 		}, nextLoad);
 	},
 
