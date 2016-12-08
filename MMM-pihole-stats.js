@@ -128,11 +128,12 @@ Module.register("MMM-pihole-stats", {
 			}
 		};
 		statsSummaryRequest.send();
-	},
 
-	updateSources: function() {
+		if (!self.config.showSources) {
+			return
+		}
+
 		var url = this.config.apiURL + '?getQuerySources';
-		var self = this;
 		var retry = true;
 
 		var statsSourcesRequest = new XMLHttpRequest();
@@ -153,7 +154,7 @@ Module.register("MMM-pihole-stats", {
 		statsSourcesRequest.send();
 	},
 
-	scheduleUpdate: function(delay) {
+	scheduleUpdate: function(delay, fn) {
 		var nextLoad = this.config.updateInterval;
 		if (typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
@@ -162,6 +163,7 @@ Module.register("MMM-pihole-stats", {
 		var self = this
 		setTimeout(function() {
 			self.updateSummary();
+			console.log('getting summary')
 		}, nextLoad);
 	},
 
@@ -178,9 +180,6 @@ Module.register("MMM-pihole-stats", {
 		this.ads_percentage_today = data.ads_percentage_today;
 
 		if (this.config.showSources) {
-			this.updateSources();
-		}
-		else {
 			this.loaded = true;
 			this.updateDom(this.config.animationSpeed);
 		}

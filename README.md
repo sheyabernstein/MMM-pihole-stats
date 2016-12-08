@@ -17,6 +17,7 @@ Pi-Hole stats for MagicMirror<sup>2</sup>
          }
      }
      ```
+ 3. Open `/etc/lighttpd/lighttpd.conf` with your favourite editor and add `"Access-Control-Allow-Origin" => "*",` to `setenv.add-response-header` - probably at around line 50 in the file.
 
 ## Configuration Options
 | **Option** | **Default** | **Description** |
