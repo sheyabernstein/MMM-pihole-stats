@@ -5,11 +5,11 @@
  * MIT Licensed.
  */
 
-Module.register("MMM-pihole-stats", {
+Module.register('MMM-pihole-stats', {
 
 	// Default module config.
 	defaults: {
-		apiURL: "http://pi-hole/admin/api.php",
+		apiURL: 'http://pi.hole/admin/api.php',
 		showSources: true,
 		showSourceHostnameOnly: true,
 
@@ -22,7 +22,7 @@ Module.register("MMM-pihole-stats", {
 
 	// Define start sequence.
 	start: function() {
-		Log.info("Starting module: " + this.name);
+		Log.info('Starting module: ' + this.name);
 
 		this.domains_being_blocked = null;
 		this.dns_queries_today = null;
@@ -36,39 +36,39 @@ Module.register("MMM-pihole-stats", {
 
 	// Override dom generator.
 	getDom: function() {
-		var wrapper = document.createElement("div");
+		var wrapper = document.createElement('div');
 
 		if (!this.loaded) {
-			wrapper.innerHTML = this.translate("LOADING");
-			wrapper.className = "dimmed light";
+			wrapper.innerHTML = this.translate('LOADING...');
+			wrapper.className = 'dimmed light';
 			return wrapper;
 		}
 
-		var header = document.createElement("div")
-		header.className = "small bright";
+		var header = document.createElement('div')
+		header.className = 'small bright';
 		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)'
 		wrapper.appendChild(header);
 
-		if (this.config.showSources) {
-			var table = document.createElement("table");
-			table.className = "xsmall light";
+		if (this.top_sources) {
+			var table = document.createElement('table');
+			table.className = 'xsmall light';
 			wrapper.appendChild(table);
 
-			var thead = document.createElement("thead");
+			var thead = document.createElement('thead');
 			table.appendChild(thead);
 
-			var row = document.createElement("tr");
+			var row = document.createElement('tr');
 			thead.appendChild(row);
 
-			var sourceCell = document.createElement("th");
+			var sourceCell = document.createElement('th');
 			sourceCell.innerHTML = 'Client';
 			row.appendChild(sourceCell);
 
-			var countCell = document.createElement("th");
+			var countCell = document.createElement('th');
 			countCell.innerHTML = 'Requests';
 			row.appendChild(countCell);
 
-			var tbody = document.createElement("tbody");
+			var tbody = document.createElement('tbody');
 			table.appendChild(tbody);
 
 			for (var source in this.top_sources) {
@@ -86,21 +86,21 @@ Module.register("MMM-pihole-stats", {
 					}
 				}
 
-				var row = document.createElement("tr");
+				var row = document.createElement('tr');
 				tbody.appendChild(row);
 
-				var sourceCell = document.createElement("td");
+				var sourceCell = document.createElement('td');
 				sourceCell.innerHTML = source;
 				row.appendChild(sourceCell);
 
-				var countCell = document.createElement("td");
+				var countCell = document.createElement('td');
 				countCell.innerHTML = adCount;
 				row.appendChild(countCell);
 			}
 		}
 
-		var footer = document.createElement("div")
-		footer.className = "xsmall";
+		var footer = document.createElement('div')
+		footer.className = 'xsmall';
 		footer.innerHTML = this.dns_queries_today + ' DNS queries, ' + this.domains_being_blocked + ' domains blacklisted.'
 		wrapper.appendChild(footer);
 
@@ -113,13 +113,13 @@ Module.register("MMM-pihole-stats", {
 		var retry = true;
 
 		var statsSummaryRequest = new XMLHttpRequest();
-		statsSummaryRequest.open("GET", url, true);
+		statsSummaryRequest.open('GET', url, true);
 		statsSummaryRequest.onreadystatechange = function() {
 			if (this.readyState === 4) {
 				if (this.status === 200) {
 					self.processSummary(JSON.parse(this.response));
 				} else {
-					Log.error(self.name + ": Could not load pi-hole summary.");
+					Log.error(self.name + ': Could not load pi-hole summary.');
 				}
 
 				if (retry) {
@@ -129,34 +129,33 @@ Module.register("MMM-pihole-stats", {
 		};
 		statsSummaryRequest.send();
 
-		if (!self.config.showSources) {
-			return
+		if (self.config.showSources) {
+			var url = this.config.apiURL + '?getQuerySources';
+			var retry = true;
+
+			var statsSourcesRequest = new XMLHttpRequest();
+			statsSourcesRequest.open('GET', url, true);
+			statsSourcesRequest.onreadystatechange = function() {
+				if (this.readyState === 4) {
+					if (this.status === 200) {
+						self.processSources(JSON.parse(this.response));
+					} else {
+						Log.error(self.name + ': Could not load pi-hole sources.');
+					}
+
+					if (retry) {
+						self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
+					}
+				}
+			};
+			statsSourcesRequest.send();
 		}
 
-		var url = this.config.apiURL + '?getQuerySources';
-		var retry = true;
-
-		var statsSourcesRequest = new XMLHttpRequest();
-		statsSourcesRequest.open("GET", url, true);
-		statsSourcesRequest.onreadystatechange = function() {
-			if (this.readyState === 4) {
-				if (this.status === 200) {
-					self.processSources(JSON.parse(this.response));
-				} else {
-					Log.error(self.name + ": Could not load pi-hole sources.");
-				}
-
-				if (retry) {
-					self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
-				}
-			}
-		};
-		statsSourcesRequest.send();
 	},
 
 	scheduleUpdate: function(delay, fn) {
 		var nextLoad = this.config.updateInterval;
-		if (typeof delay !== "undefined" && delay >= 0) {
+		if (typeof delay !== 'undefined' && delay >= 0) {
 			nextLoad = delay;
 		}
 
@@ -167,20 +166,19 @@ Module.register("MMM-pihole-stats", {
 	},
 
 	processSummary: function(data) {
-
 		if (!data) {
 			// Did not receive usable new data.
 			return;
 		}
 
-		this.domains_being_blocked = data.domains_being_blocked;
-		this.dns_queries_today = data.dns_queries_today;
-		this.ads_blocked_today = data.ads_blocked_today;
-		this.ads_percentage_today = data.ads_percentage_today;
+		this.domains_being_blocked = data['domains_being_blocked'] || '0';
+		this.dns_queries_today = data['dns_queries_today'] || '0';
+		this.ads_blocked_today = data['ads_blocked_today'] || '0';
+		this.ads_percentage_today = data['ads_percentage_today'] || '0.0';
 
 		if (this.config.showSources) {
 			this.loaded = true;
-			this.updateDom(this.config.animationSpeed);
+			this.updateDom(this.config.animationSpeed);		
 		}
 	},
 
@@ -190,8 +188,7 @@ Module.register("MMM-pihole-stats", {
 			return;
 		}
 
-		this.top_sources = data.top_sources;
-
+		this.top_sources = data['top_sources'] || [];
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
 	},
