@@ -49,7 +49,7 @@ Module.register('MMM-pihole-stats', {
 		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)'
 		wrapper.appendChild(header);
 
-		if (this.top_sources) {
+		if (this.top_sources && this.top_sources.length) {
 			var table = document.createElement('table');
 			table.className = 'xsmall light';
 			wrapper.appendChild(table);
