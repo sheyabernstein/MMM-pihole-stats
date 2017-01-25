@@ -49,7 +49,7 @@ Module.register('MMM-pihole-stats', {
 		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)'
 		wrapper.appendChild(header);
 
-		if (this.top_sources && this.top_sources.length) {
+		if (this.top_sources && Object.keys(this.top_sources).length) {
 			var table = document.createElement('table');
 			table.className = 'xsmall light';
 			wrapper.appendChild(table);
@@ -176,10 +176,8 @@ Module.register('MMM-pihole-stats', {
 		this.ads_blocked_today = data['ads_blocked_today'] || '0';
 		this.ads_percentage_today = data['ads_percentage_today'] || '0.0';
 
-		if (this.config.showSources) {
-			this.loaded = true;
-			this.updateDom(this.config.animationSpeed);		
-		}
+		this.loaded = true;
+		this.updateDom(this.config.animationSpeed);		
 	},
 
 	processSources: function(data) {
@@ -189,8 +187,6 @@ Module.register('MMM-pihole-stats', {
 		}
 
 		this.top_sources = data['top_sources'] || [];
-		this.loaded = true;
-		this.updateDom(this.config.animationSpeed);
 	},
 
 })
