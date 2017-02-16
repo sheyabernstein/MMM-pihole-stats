@@ -21,7 +21,7 @@ Pi-Hole stats for MagicMirror<sup>2</sup>
 ## Configuration Options
 | **Option** | **Default** | **Description** |
 | --- | --- | --- |
-| `apiUrl` | `http://pi.hole/admin/api.php` | Absolute URL to the Pi-Hole admin API |
+| `apiURL` | `http://pi.hole/admin/api.php` | Absolute URL to the Pi-Hole admin API |
 | `showSources` | `true` | Show request sources |
 | `showSourceHostnameOnly` | `true` | Only show hostname if applicable without showing IP address |
 | `updateInterval` | `600000` | Time in ms to wait until updating |
