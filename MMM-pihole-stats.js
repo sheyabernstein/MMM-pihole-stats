@@ -7,16 +7,17 @@
 
 Module.register('MMM-pihole-stats', {
 
+	apiURL: 'http://pi.hole/admin/api.php',
+
 	// Default module config.
 	defaults: {
-		apiURL: 'http://pi.hole/admin/api.php',
 		showSources: true,
 		showSourceHostnameOnly: true,
 
 		updateInterval: 10 * 60 * 1000, // every 10 minutes
 		animationSpeed: 1000,
 
-		retryDelay: 2500,
+		retryDelay: 1000 * 30,
 		initialLoadDelay: 0,
 	},
 
@@ -44,9 +45,9 @@ Module.register('MMM-pihole-stats', {
 			return wrapper;
 		}
 
-		var header = document.createElement('div')
+		var header = document.createElement('div');
 		header.className = 'small bright';
-		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)'
+		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)';
 		wrapper.appendChild(header);
 
 		if (this.top_sources && Object.keys(this.top_sources).length) {
@@ -108,7 +109,7 @@ Module.register('MMM-pihole-stats', {
 	},
 
 	updateStats: function() {
-		var url = this.config.apiURL + '?summary';
+		var url = this.apiURL + '?summary';
 		var self = this;
 		var retry = true;
 
@@ -123,14 +124,15 @@ Module.register('MMM-pihole-stats', {
 				}
 
 				if (retry) {
-					self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
+					self.scheduleUpdate(self.config.retryDelay);
 				}
 			}
 		};
 		statsSummaryRequest.send();
 
 		if (self.config.showSources) {
-			var url = this.config.apiURL + '?getQuerySources';
+			var url = this.apiURL + '?getQuerySources';
+			console.log(url)
 			var retry = true;
 
 			var statsSourcesRequest = new XMLHttpRequest();
@@ -144,7 +146,7 @@ Module.register('MMM-pihole-stats', {
 					}
 
 					if (retry) {
-						self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
+						self.scheduleUpdate(self.config.retryDelay);
 					}
 				}
 			};
@@ -159,7 +161,7 @@ Module.register('MMM-pihole-stats', {
 			nextLoad = delay;
 		}
 
-		var self = this
+		var self = this;
 		setTimeout(function() {
 			self.updateStats();
 		}, nextLoad);
@@ -189,4 +191,4 @@ Module.register('MMM-pihole-stats', {
 		this.top_sources = data['top_sources'] || [];
 	},
 
-})
+});

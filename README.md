@@ -17,13 +17,22 @@ Pi-Hole stats for MagicMirror<sup>2</sup>
          }
      }
      ```
+     
+  3. Configure Pi-Hole server to allow CORS:
+  *edit ```/etc/lighttpd/external.conf``` and add the following:
+  ```
+  $HTTP["url"] =~ "^/admin/api.php" {
+      setenv.add-environment = (
+    		"SERVER_NAME" => "{ip address of hostname, e.g. 127.0.0.1}"
+  	)
+  }
+  ```
+  * save the file and restart lighttpd with ```sudo systemctl restart lighttpd```
 
 ## Configuration Options
 | **Option** | **Default** | **Description** |
 | --- | --- | --- |
-| `apiURL` | `http://pi.hole/admin/api.php` | Absolute URL to the Pi-Hole admin API |
 | `showSources` | `true` | Show request sources |
 | `showSourceHostnameOnly` | `true` | Only show hostname if applicable without showing IP address |
 | `updateInterval` | `600000` | Time in ms to wait until updating |
-| `retryDelay` | `2500` | Time in ms to wait before retry |
-
+| `retryDelay` | `30000` | Time in ms to wait before retry |
