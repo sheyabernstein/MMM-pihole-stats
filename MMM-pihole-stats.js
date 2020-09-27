@@ -6,12 +6,12 @@
  */
 
 Module.register('MMM-pihole-stats', {
-
-	apiURL: 'http://pi.hole/admin/api.php',
-
 	// Default module config.
 	defaults: {
+		apiKey: '',
+		apiURL: 'http://pi.hole/admin/api.php',
 		showSources: true,
+		sourcesCount: 10,
 		showSourceHostnameOnly: true,
 
 		updateInterval: 10 * 60 * 1000, // every 10 minutes
@@ -22,7 +22,7 @@ Module.register('MMM-pihole-stats', {
 	},
 
 	// Define start sequence.
-	start: function() {
+	start: function () {
 		Log.info('Starting module: ' + this.name);
 
 		this.domains_being_blocked = null;
@@ -36,7 +36,7 @@ Module.register('MMM-pihole-stats', {
 	},
 
 	// Override dom generator.
-	getDom: function() {
+	getDom: function () {
 		var wrapper = document.createElement('div');
 
 		if (!this.loaded) {
@@ -74,17 +74,9 @@ Module.register('MMM-pihole-stats', {
 
 			for (var source in this.top_sources) {
 				var adCount = this.top_sources[source];
-				
+
 				if (this.config.showSourceHostnameOnly) {
-					var rx = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/
-					var ip = source.substring(source.lastIndexOf('(') + 1, source.lastIndexOf(')'));
-					
-					if (rx.test(ip)) {
-						hostname = source.substring(0, source.lastIndexOf('('))
-						if (hostname.length) {
-							source = hostname;
-						}
-					}
+					source = source.split("|")[0];
 				}
 
 				var row = document.createElement('tr');
@@ -108,66 +100,40 @@ Module.register('MMM-pihole-stats', {
 		return wrapper;
 	},
 
-	updateStats: function() {
-		var url = this.apiURL + '?summary';
-		var self = this;
-		var retry = true;
+	updateStats: function () {
+		Log.info(this.name + ": Getting data");
 
-		var statsSummaryRequest = new XMLHttpRequest();
-		statsSummaryRequest.open('GET', url, true);
-		statsSummaryRequest.onreadystatechange = function() {
-			if (this.readyState === 4) {
-				if (this.status === 200) {
-					self.processSummary(JSON.parse(this.response));
-				} else {
-					Log.error(self.name + ': Could not load pi-hole summary.');
-				}
-
-				if (retry) {
-					self.scheduleUpdate(self.config.retryDelay);
-				}
-			}
-		};
-		statsSummaryRequest.send();
-
-		if (self.config.showSources) {
-			var url = this.apiURL + '?getQuerySources';
-			console.log(url)
-			var retry = true;
-
-			var statsSourcesRequest = new XMLHttpRequest();
-			statsSourcesRequest.open('GET', url, true);
-			statsSourcesRequest.onreadystatechange = function() {
-				if (this.readyState === 4) {
-					if (this.status === 200) {
-						self.processSources(JSON.parse(this.response));
-					} else {
-						Log.error(self.name + ': Could not load pi-hole sources.');
-					}
-
-					if (retry) {
-						self.scheduleUpdate(self.config.retryDelay);
-					}
-				}
-			};
-			statsSourcesRequest.send();
-		}
-
+		this.sendSocketNotification("GET_PIHOLE", {
+			config: this.config
+		});
 	},
 
-	scheduleUpdate: function(delay, fn) {
+	// Handle node helper response
+	socketNotificationReceived: function (notification, payload) {
+		if (notification === "PIHOLE_DATA") {
+			this.processSummary(payload);
+			this.loaded = true;
+		}
+		else if (notification === "PIHOLE_SOURCES") {
+			this.processSources(payload);
+		}
+
+		this.updateDom(this.config.animationSpeed);
+	},
+
+	scheduleUpdate: function (delay) {
 		var nextLoad = this.config.updateInterval;
 		if (typeof delay !== 'undefined' && delay >= 0) {
 			nextLoad = delay;
 		}
 
 		var self = this;
-		setTimeout(function() {
+		setTimeout(function () {
 			self.updateStats();
 		}, nextLoad);
 	},
 
-	processSummary: function(data) {
+	processSummary: function (data) {
 		if (!data) {
 			// Did not receive usable new data.
 			return;
@@ -177,12 +143,9 @@ Module.register('MMM-pihole-stats', {
 		this.dns_queries_today = data['dns_queries_today'] || '0';
 		this.ads_blocked_today = data['ads_blocked_today'] || '0';
 		this.ads_percentage_today = data['ads_percentage_today'] || '0.0';
-
-		this.loaded = true;
-		this.updateDom(this.config.animationSpeed);		
 	},
 
-	processSources: function(data) {
+	processSources: function (data) {
 		if (!data) {
 			// Did not receive usable new data.
 			return;
