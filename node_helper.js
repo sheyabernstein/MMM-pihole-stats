@@ -17,17 +17,17 @@ module.exports = NodeHelper.create({
 			else {
 				console.log("Notification: " + notification + " Payload: " + payload);
 
-				this.getPiholeData(config.apiURL + '?summary', 'PIHOLE_DATA');
+				this.getPiholeData(config.apiURL + '?summary', config.port, 'PIHOLE_DATA');
 				if (config.showSources && config.sourcesCount > 0) {
-					this.getPiholeData(config.apiURL + '?getQuerySources=' + config.sourcesCount + '&auth=' + config.apiToken, 'PIHOLE_SOURCES');
+					this.getPiholeData(config.apiURL + '?getQuerySources=' + config.sourcesCount + '&auth=' + config.apiToken, config.port, 'PIHOLE_SOURCES');
 				}
 			}
 		}
 	},
 
-	getPiholeData: function (url, notification) {
+	getPiholeData: function (url, port, notification) {
 		var self = this;
-		request({ url: url, headers: { 'Referer': url }, method: 'GET' }, function (error, response, body) {
+		request({ url: url, port: port, headers: { 'Referer': url }, method: 'GET' }, function (error, response, body) {
 			if (!error && response.statusCode == 200) {
 				self.sendSocketNotification(notification, JSON.parse(body));
 			} else {
