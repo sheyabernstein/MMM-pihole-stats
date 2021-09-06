@@ -36,6 +36,7 @@ Here is an example entry for `config.js`.
 | **Option** | **Default** | **Description** |
 | --- | --- | --- |
 | `apiURL` | `http://pi.hole/admin/api.php` | URL to Pi-hole admin |
+| `port` | `80` | Pi-hole admin port |
 | `apiToken` | | API Token from Pi-hole (required for `showSources`) |
 | `showSources` | `true` | Show request sources (clients) |
 | `sourcesCount` | `10` | Number of returned entries for `showSources` |
