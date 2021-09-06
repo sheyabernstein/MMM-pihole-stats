@@ -130,6 +130,7 @@ Module.register('MMM-pihole-stats', {
 		var self = this;
 		setTimeout(function () {
 			self.updateStats();
+			self.scheduleUpdate(this.config.updateInterval);
 		}, nextLoad);
 	},
 
