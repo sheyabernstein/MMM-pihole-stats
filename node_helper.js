@@ -1,6 +1,5 @@
-
-var request = require('request');
-var NodeHelper = require("node_helper");
+const NodeHelper = require("node_helper");
+const axios = require('axios');
 
 module.exports = NodeHelper.create({
 
@@ -25,17 +24,28 @@ module.exports = NodeHelper.create({
 		}
 	},
 
-	getPiholeData: function (url, port, notification) {
+	getPiholeData: async function (url, port, notification) {
 		var self = this;
-		request({ url: url, port: port, headers: { 'Referer': url }, method: 'GET' }, function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				self.sendSocketNotification(notification, JSON.parse(body));
-			} else {
-				console.error(self.name + ' ERROR:', error);
-				console.error(self.name + ' statusCode:', response.statusCode);
-				console.error(self.name + ' body:', body);
-			}
-		});
+
+		// Add port to the proper location
+		var splitUrl = url.split("/");
+		if(url.startsWith("http")) {
+			splitUrl[2] = splitUrl[2] + ":" + port;
+		}
+		else {
+			splitUrl[0] = splitUrl[0] + ":" + port;
+		}
+		url = splitUrl.join("/");
+
+		try {
+			console.log(this.name + ": url: " + url);
+			var html = await axios.get(url);
+			this.sendSocketNotification(notification, html.data);
+		}
+		catch (e) {
+			console.log(this.name + " error: " + e);
+            console.error(e);
+        }
 	}
 
 });

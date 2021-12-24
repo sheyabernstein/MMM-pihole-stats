@@ -9,12 +9,18 @@ Pi-hole stats module for MagicMirror<sup>2</sup>
 
 - [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
 - [Pi-hole](https://pi-hole.net)
+- Axios
 
 ## Installation
 
 1. Clone this repo into `~/MagicMirror/modules` directory.<br>
   `git clone https://github.com/sheyabernstein/MMM-pihole-stats.git`
-2. Configure your `~/MagicMirror/config/config.js`:
+2. Install Axios dependency:
+```
+cd MMM-pihole-stats
+npm install
+```
+3. Configure your `~/MagicMirror/config/config.js`:
 
 Here is an example entry for `config.js`.
 
