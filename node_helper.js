@@ -1,21 +1,21 @@
-
-var request = require('request');
-var NodeHelper = require("node_helper");
+const Log = require("logger");
+const fetch = require("node-fetch");
+const NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
 
 	start: function () {
-		console.log("Starting node_helper for module [" + this.name + "]");
+		Log.info("Starting node_helper for module [" + this.name + "]");
 	},
 
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "GET_PIHOLE") {
-			var config = payload.config;
+			let config = payload.config;
 			if (config.showSources && (config.apiToken == null || config.apiToken == "")) {
-				console.error( this.name + ": No apiKey set." );
+				Log.error( this.name + ": No apiKey set." );
 			}
 			else {
-				console.log("Notification: " + notification + " Payload: " + payload);
+				Log.info("Notification: " + notification + " Payload: " + payload);
 
 				this.getPiholeData(config.apiURL + '?summary', config.port, 'PIHOLE_DATA');
 				if (config.showSources && config.sourcesCount > 0) {
@@ -26,16 +26,19 @@ module.exports = NodeHelper.create({
 	},
 
 	getPiholeData: function (url, port, notification) {
-		var self = this;
-		request({ url: url, port: port, headers: { 'Referer': url }, method: 'GET' }, function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				self.sendSocketNotification(notification, JSON.parse(body));
-			} else {
-				console.error(self.name + ' ERROR:', error);
-				console.error(self.name + ' statusCode:', response.statusCode);
-				console.error(self.name + ' body:', body);
-			}
-		});
-	}
+		const self = this;
 
+		url = new URL(url);
+		url.port = port;
+		url = url.toString();
+		const headers = {'Referer': url}
+
+		fetch(url, { headers: headers}).then(response => {
+			response.json().then(data => {
+				self.sendSocketNotification(notification, data);
+			})
+		}, error => {
+			Log.error(self.name + ' ERROR:', error);
+		})
+	}
 });

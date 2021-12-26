@@ -38,7 +38,7 @@ Module.register('MMM-pihole-stats', {
 
 	// Override dom generator.
 	getDom: function () {
-		var wrapper = document.createElement('div');
+		let wrapper = document.createElement('div');
 
 		if (!this.loaded) {
 			wrapper.innerHTML = this.translate('LOADING...');
@@ -46,54 +46,54 @@ Module.register('MMM-pihole-stats', {
 			return wrapper;
 		}
 
-		var header = document.createElement('div');
+		let header = document.createElement('div');
 		header.className = 'small bright';
 		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)';
 		wrapper.appendChild(header);
 
 		if (this.top_sources && Object.keys(this.top_sources).length) {
-			var table = document.createElement('table');
+			let table = document.createElement('table');
 			table.className = 'xsmall light';
 			wrapper.appendChild(table);
 
-			var thead = document.createElement('thead');
+			let thead = document.createElement('thead');
 			table.appendChild(thead);
 
-			var row = document.createElement('tr');
+			let row = document.createElement('tr');
 			thead.appendChild(row);
 
-			var sourceCell = document.createElement('th');
+			let sourceCell = document.createElement('th');
 			sourceCell.innerHTML = 'Client';
 			row.appendChild(sourceCell);
 
-			var countCell = document.createElement('th');
+			let countCell = document.createElement('th');
 			countCell.innerHTML = 'Requests';
 			row.appendChild(countCell);
 
-			var tbody = document.createElement('tbody');
+			let tbody = document.createElement('tbody');
 			table.appendChild(tbody);
 
-			for (var source in this.top_sources) {
-				var adCount = this.top_sources[source];
+			for (let source in this.top_sources) {
+				let adCount = this.top_sources[source];
 
 				if (this.config.showSourceHostnameOnly) {
 					source = source.split("|")[0];
 				}
 
-				var row = document.createElement('tr');
+				let row = document.createElement('tr');
 				tbody.appendChild(row);
 
-				var sourceCell = document.createElement('td');
+				let sourceCell = document.createElement('td');
 				sourceCell.innerHTML = source;
 				row.appendChild(sourceCell);
 
-				var countCell = document.createElement('td');
+				let countCell = document.createElement('td');
 				countCell.innerHTML = adCount;
 				row.appendChild(countCell);
 			}
 		}
 
-		var footer = document.createElement('div')
+		let footer = document.createElement('div')
 		footer.className = 'xsmall';
 		footer.innerHTML = this.dns_queries_today + ' DNS queries, ' + this.domains_being_blocked + ' domains blacklisted.'
 		wrapper.appendChild(footer);
@@ -123,15 +123,15 @@ Module.register('MMM-pihole-stats', {
 	},
 
 	scheduleUpdate: function (delay) {
-		var nextLoad = this.config.updateInterval;
+		let nextLoad = this.config.updateInterval;
 		if (typeof delay !== 'undefined' && delay >= 0) {
 			nextLoad = delay;
 		}
 
-		var self = this;
+		let self = this;
 		setTimeout(function () {
 			self.updateStats();
-			self.scheduleUpdate(this.config.updateInterval);
+			self.scheduleUpdate(self.config.updateInterval);
 		}, nextLoad);
 	},
 
