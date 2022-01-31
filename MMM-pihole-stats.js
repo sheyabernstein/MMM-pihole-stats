@@ -18,8 +18,23 @@ Module.register('MMM-pihole-stats', {
 		updateInterval: 10 * 60 * 1000, // every 10 minutes
 		animationSpeed: 1000,
 
+		floatingPoints: 2,
+
 		retryDelay: 1000 * 30,
 		initialLoadDelay: 0,
+	},
+
+	formatInt: function (n) {
+		return parseInt(n).toLocaleString();
+	},
+
+	formatFloat: function (n) {
+		if (this.config.floatingPoints) {
+			let x = 10 ** this.config.floatingPoints;
+			return Math.round(parseFloat(n) * x) / x;
+		} else {
+			return n;
+		}
 	},
 
 	// Define start sequence.
@@ -48,7 +63,7 @@ Module.register('MMM-pihole-stats', {
 
 		let header = document.createElement('div');
 		header.className = 'small bright';
-		header.innerHTML = this.ads_blocked_today + ' ads blocked today. (' + this.ads_percentage_today + '%)';
+		header.innerHTML = this.formatInt(this.ads_blocked_today) + ' ads blocked today. (' + this.formatFloat(this.ads_percentage_today) + '%)';
 		wrapper.appendChild(header);
 
 		if (this.top_sources && Object.keys(this.top_sources).length) {
@@ -88,14 +103,14 @@ Module.register('MMM-pihole-stats', {
 				row.appendChild(sourceCell);
 
 				let countCell = document.createElement('td');
-				countCell.innerHTML = adCount;
+				countCell.innerHTML = this.formatInt(adCount);
 				row.appendChild(countCell);
 			}
 		}
 
 		let footer = document.createElement('div')
 		footer.className = 'xsmall';
-		footer.innerHTML = this.dns_queries_today + ' DNS queries, ' + this.domains_being_blocked + ' domains blacklisted.'
+		footer.innerHTML = this.formatInt(this.dns_queries_today) + ' DNS queries, ' + this.formatInt(this.domains_being_blocked) + ' domains blacklisted.'
 		wrapper.appendChild(footer);
 
 		return wrapper;

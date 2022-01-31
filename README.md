@@ -33,13 +33,14 @@ Here is an example entry for `config.js`.
 
 ## Configuration Options
 
-| **Option** | **Default** | **Description** |
-| --- | --- | --- |
-| `apiURL` | `http://pi.hole/admin/api.php` | URL to Pi-hole admin |
-| `port` | `80` | Pi-hole admin port |
-| `apiToken` | | API Token from Pi-hole (required for `showSources`) |
-| `showSources` | `true` | Show request sources (clients) |
-| `sourcesCount` | `10` | Number of returned entries for `showSources` |
-| `showSourceHostnameOnly` | `true` | Only show hostname if applicable without showing IP address |
-| `updateInterval` | `600000` | Time in ms to wait until updating |
-| `retryDelay` | `30000` | Time in ms to wait before retry |
+| **Option**               | **Default**                    | **Description**                                                                                                                     |
+|--------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `apiURL`                 | `http://pi.hole/admin/api.php` | URL to Pi-hole admin                                                                                                                |
+| `port`                   | `80`                           | Pi-hole admin port                                                                                                                  |
+| `apiToken`               |                                | API Token from Pi-hole (required for `showSources`)                                                                                 |
+| `showSources`            | `true`                         | Show request sources (clients)                                                                                                      |
+| `sourcesCount`           | `10`                           | Number of returned entries for `showSources`                                                                                        |
+| `showSourceHostnameOnly` | `true`                         | Only show hostname if applicable without showing IP address                                                                         |
+| `updateInterval`         | `600000`                       | Time in ms to wait until updating                                                                                                   |
+| `retryDelay`             | `30000`                        | Time in ms to wait before retry                                                                                                     |
+| `floatingPoints`         | `2`                            | Format floating point numbers to decimal points, e.g. `2` to format to 5.55. Setting this to `0` will show unlimited decimal points |
