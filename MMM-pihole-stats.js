@@ -25,7 +25,7 @@ Module.register('MMM-pihole-stats', {
 	},
 
 	formatInt: function (n) {
-		return parseInt(n).toLocaleString();
+		return n.toLocaleString();
 	},
 
 	formatFloat: function (n) {
