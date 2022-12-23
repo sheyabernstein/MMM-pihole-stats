@@ -17,9 +17,9 @@ module.exports = NodeHelper.create({
 			else {
 				Log.info("Notification: " + notification + " Payload: " + payload);
 
-				this.getPiholeData(config.apiURL + '?summary', config.port, 'PIHOLE_DATA');
+				this.getPiholeData(config.apiURL + '?summary&auth=' + config.apiToken, config.port, 'PIHOLE_DATA');
 				if (config.showSources && config.sourcesCount > 0) {
-					this.getPiholeData(config.apiURL + '?getQuerySources=' + config.sourcesCount + '&auth=' + config.apiToken, config.port, 'PIHOLE_SOURCES');
+					this.getPiholeData(config.apiURL + '?getQuerySources=' + config.sourcesCount, config.port, 'PIHOLE_SOURCES');
 				}
 			}
 		}
