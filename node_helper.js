@@ -67,7 +67,6 @@ module.exports = NodeHelper.create({
 				self.sendSocketNotification(notification, data);
 			})
 		}, error => {
-			Log.error(self.name + 'url:', url)
 			Log.error(self.name + ' ERROR:', error);
 		})
 	}
