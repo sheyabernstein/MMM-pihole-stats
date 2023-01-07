@@ -2,8 +2,15 @@
 
 Pi-hole stats module for MagicMirror<sup>2</sup>
 
-![Preview](docs/preview.png "Screen Shot")
+## Screenshots
+
+With `config.showSources` enabled:
+
 ![Preview-Sources](docs/preview-showSources.png "Screen Shot (with Sources)")
+
+Without `config.showSources` enabled:
+
+![Preview](docs/preview.png "Screen Shot")
 
 ## Dependencies
 
@@ -14,9 +21,10 @@ Pi-hole stats module for MagicMirror<sup>2</sup>
 
 1. Clone this repo into `~/MagicMirror/modules` directory.<br>
   `git clone https://github.com/sheyabernstein/MMM-pihole-stats.git`
-2. Configure your `~/MagicMirror/config/config.js`:
+2. Obtain an API token from your PiHole installation by navigating to [http://pi.hole/admin/settings.php?tab=api](http://pi.hole/admin/settings.php?tab=api) and clicking `Show API token`
+3. Configure your `~/MagicMirror/config/config.js`
 
-Here is an example entry for `config.js`.
+Here is an example entry for `config.js`:
 
 ```
 {
@@ -24,18 +32,18 @@ Here is an example entry for `config.js`.
     position: "top_left", // Or any valid MagicMirror position.
     config: {
       apiToken: "0123456789abcdef"
-        // See 'Configuration options' for more information.
+      // See 'Configuration options' for more information.
     }
 }
 ```
 
-> Configuring the Pi-hole server to allow CORS is no longer needed.
+> Sep 27, 2020 update: Configuring the Pi-hole server to allow CORS is no longer needed.
 
 ## Configuration Options
 
 | **Option**               | **Default**                    | **Description**                                                                                                                     |
 |--------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `apiURL`                 | `http://pi.hole/admin/api.php` | URL to Pi-hole admin                                                                                                                |
+| `apiURL`                 | `http://pi.hole/admin/api.php` | URL to Pi-hole admin, including HTTP protocol                                                                                       |
 | `port`                   | `80`                           | Pi-hole admin port                                                                                                                  |
 | `apiToken`               |                                | API Token from Pi-hole (required for `showSources`)                                                                                 |
 | `showSources`            | `true`                         | Show request sources (clients)                                                                                                      |
