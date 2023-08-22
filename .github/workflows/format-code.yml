@@ -1,0 +1,16 @@
+name: Format Code
+
+on:
+  push:
+
+jobs:
+  format:
+    name: Format Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Format Code with Prettier
+        run: npx prettier --write "**/*.js" --tab-width
