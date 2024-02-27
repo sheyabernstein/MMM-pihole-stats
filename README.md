@@ -21,8 +21,10 @@ Without `config.showSources` enabled:
 
 1. Clone this repo into `~/MagicMirror/modules` directory.<br>
   `git clone https://github.com/sheyabernstein/MMM-pihole-stats.git`
-2. Obtain an API token from your PiHole installation by navigating to [http://pi.hole/admin/settings.php?tab=api](http://pi.hole/admin/settings.php?tab=api) and clicking `Show API token`
-3. Configure your `~/MagicMirror/config/config.js`
+2. Run `npm install` in the cloned module directory
+3. Obtain an API token from your PiHole installation by navigating to [http://pi.hole/admin/settings.php?tab=api](http://pi.hole/admin/settings.php?tab=api) and clicking `Show API token`
+4. Configure your `~/MagicMirror/config/config.js`
+
 
 Here is an example entry for `config.js`:
 
@@ -37,6 +39,8 @@ Here is an example entry for `config.js`:
 }
 ```
 
+> Feb 27, 2024 update: This module now requires `npm install` when installing.
+
 > Sep 27, 2020 update: Configuring the Pi-hole server to allow CORS is no longer needed.
 
 ## Configuration Options
@@ -44,7 +48,6 @@ Here is an example entry for `config.js`:
 | **Option**               | **Default**                    | **Description**                                                                                                                     |
 |--------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 | `apiURL`                 | `http://pi.hole/admin/api.php` | URL to Pi-hole admin, including HTTP protocol                                                                                       |
-| `port`                   | `80`                           | Pi-hole admin port                                                                                                                  |
 | `apiToken`               |                                | API Token from Pi-hole (required for `showSources`)                                                                                 |
 | `showSources`            | `true`                         | Show request sources (clients)                                                                                                      |
 | `sourcesCount`           | `10`                           | Number of returned entries for `showSources`                                                                                        |
