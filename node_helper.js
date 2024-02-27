@@ -2,11 +2,11 @@ const Log = require("logger");
 const NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
-    start () {
+    start() {
         Log.info(`Starting node_helper for module [${this.name}]`);
     },
 
-    socketNotificationReceived (notification, payload) {
+    socketNotificationReceived(notification, payload) {
         if (notification === "GET_PIHOLE") {
             const config = payload.config;
 
@@ -20,19 +20,21 @@ module.exports = NodeHelper.create({
 
             if (config.showSources && config.sourcesCount > 0) {
                 if (config.showSources && !config.apiToken) {
-                    Log.error(`${this.name}: Can't load sources because the apiKey is not set.`);
+                    Log.error(
+                        `${this.name}: Can't load sources because the apiKey is not set.`,
+                    );
                 } else {
                     this.getPiholeData(
                         config,
                         { getQuerySources: config.sourcesCount },
-                        "PIHOLE_SOURCES"
+                        "PIHOLE_SOURCES",
                     );
                 }
             }
         }
     },
 
-    isValidURL (url) {
+    isValidURL(url) {
         try {
             new URL(url);
             return true;
@@ -41,7 +43,7 @@ module.exports = NodeHelper.create({
         }
     },
 
-    buildURL (config, params) {
+    buildURL(config, params) {
         params = params || {};
 
         if (config.apiToken && !params.hasOwnProperty("auth")) {
@@ -54,7 +56,7 @@ module.exports = NodeHelper.create({
         return url.toString();
     },
 
-    async getPiholeData (config, params, notification) {
+    async getPiholeData(config, params, notification) {
         const self = this,
             url = self.buildURL(config, params),
             headers = { Referer: url };
@@ -66,11 +68,17 @@ module.exports = NodeHelper.create({
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            if (response.headers.get('content-type').includes('application/json')) {
+            if (
+                response.headers
+                    .get("content-type")
+                    .includes("application/json")
+            ) {
                 const data = await response.json();
                 self.sendSocketNotification(notification, data);
             } else {
-                throw new Error(`Expected JSON but received ${response.headers.get('content-type')}`);
+                throw new Error(
+                    `Expected JSON but received ${response.headers.get("content-type")}`,
+                );
             }
         } catch (error) {
             Log.error(self.name + " ERROR:", error);
