@@ -14,7 +14,7 @@ Without `config.showSources` enabled:
 
 ## Dependencies
 
-- [MagicMirror²](https://github.com/MichMich/MagicMirror)
+- [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
 - [Pi-hole](https://pi-hole.net)
 
 ## Installation
@@ -28,7 +28,7 @@ Without `config.showSources` enabled:
 
 Here is an example entry for `config.js`:
 
-```
+```js
 {
     module: "MMM-pihole-stats",
     position: "top_left", // Or any valid MagicMirror position.
@@ -36,7 +36,7 @@ Here is an example entry for `config.js`:
       apiToken: "0123456789abcdef"
       // See 'Configuration options' for more information.
     }
-}
+},
 ```
 
 > Feb 27, 2024 update: This module now requires `npm install` when installing.
