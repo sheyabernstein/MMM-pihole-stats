@@ -1,4 +1,4 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: Pi-Hole Stats
  *
  * By Sheya Bernstein https://github.com/sheyabernstein/MMM-pihole-stats
@@ -23,22 +23,21 @@ Module.register("MMM-pihole-stats", {
         initialLoadDelay: 0,
     },
 
-    formatInt: function (n) {
+    formatInt (n) {
         return n.toLocaleString();
     },
 
-    formatFloat: function (n) {
+    formatFloat (n) {
         if (this.config.floatingPoints) {
-            let x = 10 ** this.config.floatingPoints;
+            const x = 10 ** this.config.floatingPoints;
             return Math.round(parseFloat(n) * x) / x;
-        } else {
-            return n;
         }
+        return n;
     },
 
     // Define start sequence.
-    start: function () {
-        Log.info("Starting module: " + this.name);
+    start () {
+        Log.info(`Starting module: ${this.name}`);
 
         this.domains_being_blocked = null;
         this.dns_queries_today = null;
@@ -51,8 +50,8 @@ Module.register("MMM-pihole-stats", {
     },
 
     // Override dom generator.
-    getDom: function () {
-        let wrapper = document.createElement("div");
+    getDom () {
+        const wrapper = document.createElement("div");
 
         if (!this.loaded) {
             wrapper.innerHTML = this.translate("LOADING...");
@@ -60,79 +59,79 @@ Module.register("MMM-pihole-stats", {
             return wrapper;
         }
 
-        let header = document.createElement("div");
+        const header = document.createElement("div");
         header.className = "small bright";
-        header.innerHTML =
-            this.formatInt(this.ads_blocked_today) +
-            " ads blocked today. (" +
-            this.formatFloat(this.ads_percentage_today) +
-            "%)";
+        header.innerHTML
+          = `${this.formatInt(this.ads_blocked_today)}
+            ads blocked today. (
+            ${this.formatFloat(this.ads_percentage_today)}
+            %)`;
         wrapper.appendChild(header);
 
         if (this.top_sources && Object.keys(this.top_sources).length) {
-            let table = document.createElement("table");
+            const table = document.createElement("table");
             table.className = "xsmall light";
             wrapper.appendChild(table);
 
-            let thead = document.createElement("thead");
+            const thead = document.createElement("thead");
             table.appendChild(thead);
 
-            let row = document.createElement("tr");
+            const row = document.createElement("tr");
             thead.appendChild(row);
 
-            let sourceCell = document.createElement("th");
+            const sourceCell = document.createElement("th");
             sourceCell.innerHTML = "Client";
             row.appendChild(sourceCell);
 
-            let countCell = document.createElement("th");
+            const countCell = document.createElement("th");
             countCell.innerHTML = "Requests";
             row.appendChild(countCell);
 
-            let tbody = document.createElement("tbody");
+            const tbody = document.createElement("tbody");
             table.appendChild(tbody);
 
             for (let source in this.top_sources) {
-                let adCount = this.top_sources[source];
+                const adCount = this.top_sources[source];
 
                 if (this.config.showSourceHostnameOnly) {
                     source = source.split("|")[0];
                 }
 
-                let row = document.createElement("tr");
+                const row = document.createElement("tr");
                 tbody.appendChild(row);
 
-                let sourceCell = document.createElement("td");
+                const sourceCell = document.createElement("td");
                 sourceCell.innerHTML = source;
                 row.appendChild(sourceCell);
 
-                let countCell = document.createElement("td");
+                const countCell = document.createElement("td");
                 countCell.innerHTML = this.formatInt(adCount);
                 row.appendChild(countCell);
             }
         }
 
-        let footer = document.createElement("div");
+        const footer = document.createElement("div");
         footer.className = "xsmall";
-        footer.innerHTML =
-            this.formatInt(this.dns_queries_today) +
-            " DNS queries, " +
-            this.formatInt(this.domains_being_blocked) +
-            " domains blacklisted.";
+        footer.innerHTML
+          = `${this.formatInt(this.dns_queries_today)}
+            DNS queries,
+            ${this.formatInt(this.domains_being_blocked)}
+            domains blacklisted.`;
         wrapper.appendChild(footer);
 
         return wrapper;
     },
 
-    updateStats: function () {
-        Log.info(this.name + ": Getting data");
+    updateStats () {
+        Log.info(`${this.name}: Getting data`);
 
         this.sendSocketNotification("GET_PIHOLE", {
-            config: this.config,
+            config: this.config
         });
     },
 
     // Handle node helper response
-    socketNotificationReceived: function (notification, payload) {
+    socketNotificationReceived (notification, payload) {
         if (notification === "PIHOLE_DATA") {
             this.processSummary(payload);
             this.loaded = true;
@@ -143,37 +142,37 @@ Module.register("MMM-pihole-stats", {
         this.updateDom(this.config.animationSpeed);
     },
 
-    scheduleUpdate: function (delay) {
+    scheduleUpdate (delay) {
         let nextLoad = this.config.updateInterval;
         if (typeof delay !== "undefined" && delay >= 0) {
             nextLoad = delay;
         }
 
-        let self = this;
-        setTimeout(function () {
+        const self = this;
+        setTimeout(() => {
             self.updateStats();
             self.scheduleUpdate(self.config.updateInterval);
         }, nextLoad);
     },
 
-    processSummary: function (data) {
+    processSummary (data) {
         if (!data) {
             // Did not receive usable new data.
             return;
         }
 
-        this.domains_being_blocked = data["domains_being_blocked"] || "0";
-        this.dns_queries_today = data["dns_queries_today"] || "0";
-        this.ads_blocked_today = data["ads_blocked_today"] || "0";
-        this.ads_percentage_today = data["ads_percentage_today"] || "0.0";
+        this.domains_being_blocked = data.domains_being_blocked || "0";
+        this.dns_queries_today = data.dns_queries_today || "0";
+        this.ads_blocked_today = data.ads_blocked_today || "0";
+        this.ads_percentage_today = data.ads_percentage_today || "0.0";
     },
 
-    processSources: function (data) {
+    processSources (data) {
         if (!data) {
             // Did not receive usable new data.
             return;
         }
 
-        this.top_sources = data["top_sources"] || [];
+        this.top_sources = data.top_sources || [];
     },
 });

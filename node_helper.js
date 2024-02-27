@@ -1,42 +1,38 @@
 const Log = require("logger");
-const request = require("request");
 const NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
-    start: function () {
-        Log.info("Starting node_helper for module [" + this.name + "]");
+    start () {
+        Log.info(`Starting node_helper for module [${this.name}]`);
     },
 
-    socketNotificationReceived: function (notification, payload) {
+    socketNotificationReceived (notification, payload) {
         if (notification === "GET_PIHOLE") {
-            let config = payload.config;
+            const config = payload.config;
 
             if (!this.isValidURL(config.apiURL)) {
-                Log.error(this.name + ": The apiURL is not a valid URL");
+                Log.error(`${this.name}: The apiURL is not a valid URL`);
                 return;
             }
 
-            Log.info("Notification: " + notification + " Payload: " + payload);
+            Log.debug(`Notification: ${notification} Payload: ${payload}`);
             this.getPiholeData(config, { summary: 1 }, "PIHOLE_DATA");
 
             if (config.showSources && config.sourcesCount > 0) {
                 if (config.showSources && !config.apiToken) {
-                    Log.error(
-                        this.name +
-                            ": Can't load sources because the apiKey is not set.",
-                    );
+                    Log.error(`${this.name}: Can't load sources because the apiKey is not set.`);
                 } else {
                     this.getPiholeData(
                         config,
                         { getQuerySources: config.sourcesCount },
-                        "PIHOLE_SOURCES",
+                        "PIHOLE_SOURCES"
                     );
                 }
             }
         }
     },
 
-    isValidURL: function (url) {
+    isValidURL (url) {
         try {
             new URL(url);
             return true;
@@ -45,11 +41,11 @@ module.exports = NodeHelper.create({
         }
     },
 
-    buildURL: function (config, params) {
+    buildURL (config, params) {
         params = params || {};
 
         if (config.apiToken && !params.hasOwnProperty("auth")) {
-            params["auth"] = config.apiToken;
+            params.auth = config.apiToken;
         }
 
         const url = new URL(config.apiURL);
@@ -58,22 +54,26 @@ module.exports = NodeHelper.create({
         return url.toString();
     },
 
-    getPiholeData: function (config, params, notification) {
+    async getPiholeData (config, params, notification) {
         const self = this,
             url = self.buildURL(config, params),
             headers = { Referer: url };
 
         this.sendSocketNotification("LOADING_PIHOLE_URL", url);
 
-        request({ url, headers, json: true }, (error, response, data) => {
-Log.info('url', url)
-//Log.info('response', response.statusCode)
-//Log.info('data', data)
-            if (error) {
-                Log.error(self.name + " ERROR:", error);
-            } else {
-                self.sendSocketNotification(notification, data);
+        try {
+            const response = await fetch(url, { headers });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        });
+            if (response.headers.get('content-type').includes('application/json')) {
+                const data = await response.json();
+                self.sendSocketNotification(notification, data);
+            } else {
+                throw new Error(`Expected JSON but received ${response.headers.get('content-type')}`);
+            }
+        } catch (error) {
+            Log.error(self.name + " ERROR:", error);
+        }
     },
 });

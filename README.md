@@ -19,12 +19,10 @@ Without `config.showSources` enabled:
 
 ## Installation
 
-1. Clone this repo into `~/MagicMirror/modules` directory.<br>
-  `git clone https://github.com/sheyabernstein/MMM-pihole-stats.git`
-2. Run `npm install` in the cloned module directory
-3. Obtain an API token from your PiHole installation by navigating to [http://pi.hole/admin/settings.php?tab=api](http://pi.hole/admin/settings.php?tab=api) and clicking `Show API token`
-4. Configure your `~/MagicMirror/config/config.js`
-
+1. Clone this repo into `~/MagicMirror/modules` directory.
+  `git clone https://github.com/sheyabernstein/MMM-pihole-stats`
+2. Obtain an API token from your PiHole installation by navigating to [http://pi.hole/admin/settings.php?tab=api](http://pi.hole/admin/settings.php?tab=api) and clicking `Show API token`
+3. Configure your `~/MagicMirror/config/config.js`
 
 Here is an example entry for `config.js`:
 
@@ -39,10 +37,6 @@ Here is an example entry for `config.js`:
 },
 ```
 
-> Feb 27, 2024 update: This module now requires `npm install` when installing.
-
-> Sep 27, 2020 update: Configuring the Pi-hole server to allow CORS is no longer needed.
-
 ## Configuration Options
 
 | **Option**               | **Default**                    | **Description**                                                                                                                     |
@@ -55,3 +49,9 @@ Here is an example entry for `config.js`:
 | `updateInterval`         | `600000`                       | Time in ms to wait until updating                                                                                                   |
 | `retryDelay`             | `30000`                        | Time in ms to wait before retry                                                                                                     |
 | `floatingPoints`         | `2`                            | Format floating point numbers to decimal points, e.g. `2` to format to 5.55. Setting this to `0` will show unlimited decimal points |
+
+## Notes
+
+- Feb 28, 2024 update: This module needs no external packages anymore.
+- Feb 27, 2024 update: This module now requires `npm install` when installing.
+- Sep 27, 2020 update: Configuring the Pi-hole server to allow CORS is no longer needed.
