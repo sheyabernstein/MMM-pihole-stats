@@ -1,6 +1,6 @@
 # MMM-pihole-stats
 
-Pi-hole stats module for MagicMirror<sup>2</sup>
+Pi-hole stats module for MagicMirror².
 
 ## Screenshots
 
@@ -14,7 +14,7 @@ Without `config.showSources` enabled:
 
 ## Dependencies
 
-- [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
+- [MagicMirror²](https://github.com/MichMich/MagicMirror)
 - [Pi-hole](https://pi-hole.net)
 
 ## Installation

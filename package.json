@@ -1,7 +1,7 @@
 {
-  "name": "MMMM-pihole-stats",
+  "name": "mmm-pihole-stats",
   "version": "1.0.0",
-  "description": "Pi-hole stats module for MagicMirror2",
+  "description": "Pi-hole stats module for MagicMirror².",
   "main": "MMM-pihole-stats.js",
   "repository": {
     "type": "git",
