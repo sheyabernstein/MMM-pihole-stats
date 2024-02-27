@@ -23,11 +23,11 @@ Module.register("MMM-pihole-stats", {
         initialLoadDelay: 0,
     },
 
-    formatInt (n) {
+    formatInt(n) {
         return n.toLocaleString();
     },
 
-    formatFloat (n) {
+    formatFloat(n) {
         if (this.config.floatingPoints) {
             const x = 10 ** this.config.floatingPoints;
             return Math.round(parseFloat(n) * x) / x;
@@ -36,7 +36,7 @@ Module.register("MMM-pihole-stats", {
     },
 
     // Define start sequence.
-    start () {
+    start() {
         Log.info(`Starting module: ${this.name}`);
 
         this.domains_being_blocked = null;
@@ -50,7 +50,7 @@ Module.register("MMM-pihole-stats", {
     },
 
     // Override dom generator.
-    getDom () {
+    getDom() {
         const wrapper = document.createElement("div");
 
         if (!this.loaded) {
@@ -61,8 +61,7 @@ Module.register("MMM-pihole-stats", {
 
         const header = document.createElement("div");
         header.className = "small bright";
-        header.innerHTML
-          = `${this.formatInt(this.ads_blocked_today)}
+        header.innerHTML = `${this.formatInt(this.ads_blocked_today)}
             ads blocked today. (
             ${this.formatFloat(this.ads_percentage_today)}
             %)`;
@@ -112,8 +111,7 @@ Module.register("MMM-pihole-stats", {
 
         const footer = document.createElement("div");
         footer.className = "xsmall";
-        footer.innerHTML
-          = `${this.formatInt(this.dns_queries_today)}
+        footer.innerHTML = `${this.formatInt(this.dns_queries_today)}
             DNS queries,
             ${this.formatInt(this.domains_being_blocked)}
             domains blacklisted.`;
@@ -122,16 +120,16 @@ Module.register("MMM-pihole-stats", {
         return wrapper;
     },
 
-    updateStats () {
+    updateStats() {
         Log.info(`${this.name}: Getting data`);
 
         this.sendSocketNotification("GET_PIHOLE", {
-            config: this.config
+            config: this.config,
         });
     },
 
     // Handle node helper response
-    socketNotificationReceived (notification, payload) {
+    socketNotificationReceived(notification, payload) {
         if (notification === "PIHOLE_DATA") {
             this.processSummary(payload);
             this.loaded = true;
@@ -142,7 +140,7 @@ Module.register("MMM-pihole-stats", {
         this.updateDom(this.config.animationSpeed);
     },
 
-    scheduleUpdate (delay) {
+    scheduleUpdate(delay) {
         let nextLoad = this.config.updateInterval;
         if (typeof delay !== "undefined" && delay >= 0) {
             nextLoad = delay;
@@ -155,7 +153,7 @@ Module.register("MMM-pihole-stats", {
         }, nextLoad);
     },
 
-    processSummary (data) {
+    processSummary(data) {
         if (!data) {
             // Did not receive usable new data.
             return;
@@ -167,7 +165,7 @@ Module.register("MMM-pihole-stats", {
         this.ads_percentage_today = data.ads_percentage_today || "0.0";
     },
 
-    processSources (data) {
+    processSources(data) {
         if (!data) {
             // Did not receive usable new data.
             return;
