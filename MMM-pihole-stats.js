@@ -10,7 +10,6 @@ Module.register("MMM-pihole-stats", {
     defaults: {
         apiKey: "",
         apiURL: "http://pi.hole/admin/api.php",
-        port: 80,
         showSources: true,
         sourcesCount: 10,
         showSourceHostnameOnly: true,

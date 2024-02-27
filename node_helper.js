@@ -1,5 +1,5 @@
 const Log = require("logger");
-const fetch = require("node-fetch");
+const request = require("request");
 const NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
@@ -54,10 +54,6 @@ module.exports = NodeHelper.create({
 
         const url = new URL(config.apiURL);
 
-        if (config.port) {
-            url.port = config.port;
-        }
-
         url.search = new URLSearchParams(params).toString();
         return url.toString();
     },
@@ -68,15 +64,16 @@ module.exports = NodeHelper.create({
             headers = { Referer: url };
 
         this.sendSocketNotification("LOADING_PIHOLE_URL", url);
-        fetch(url, { headers: headers }).then(
-            (response) => {
-                response.json().then((data) => {
-                    self.sendSocketNotification(notification, data);
-                });
-            },
-            (error) => {
+
+        request({ url, headers, json: true }, (error, response, data) => {
+Log.info('url', url)
+//Log.info('response', response.statusCode)
+//Log.info('data', data)
+            if (error) {
                 Log.error(self.name + " ERROR:", error);
-            },
-        );
+            } else {
+                self.sendSocketNotification(notification, data);
+            }
+        });
     },
 });
