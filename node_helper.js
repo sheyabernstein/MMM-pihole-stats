@@ -66,7 +66,7 @@ module.exports = NodeHelper.create({
         try {
             const response = await fetch(url, { headers });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                Log.error(`${this.name}: HTTP ${response.status}`);
             }
             if (
                 response.headers
@@ -76,12 +76,12 @@ module.exports = NodeHelper.create({
                 const data = await response.json();
                 self.sendSocketNotification(notification, data);
             } else {
-                throw new Error(
-                    `Expected JSON but received ${response.headers.get("content-type")}`,
+                Log.error(
+                    `${this.name}: Expected JSON but received ${response.headers.get("content-type")}`,
                 );
             }
         } catch (error) {
-            Log.error(self.name + " ERROR:", error);
+            Log.error(`${this.name}: ${error}`)
         }
     },
 });
