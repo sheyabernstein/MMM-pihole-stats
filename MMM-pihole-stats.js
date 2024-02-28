@@ -20,7 +20,7 @@ Module.register("MMM-pihole-stats", {
         floatingPoints: 2,
 
         retryDelay: 1000 * 30,
-        initialLoadDelay: 0,
+        initialLoadDelay: 0
     },
 
     formatInt(n) {
@@ -124,7 +124,7 @@ Module.register("MMM-pihole-stats", {
         Log.info(`${this.name}: Getting data`);
 
         this.sendSocketNotification("GET_PIHOLE", {
-            config: this.config,
+            config: this.config
         });
     },
 
@@ -172,5 +172,5 @@ Module.register("MMM-pihole-stats", {
         }
 
         this.top_sources = data.top_sources || [];
-    },
+    }
 });

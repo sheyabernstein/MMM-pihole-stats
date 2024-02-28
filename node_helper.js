@@ -21,13 +21,13 @@ module.exports = NodeHelper.create({
             if (config.showSources && config.sourcesCount > 0) {
                 if (config.showSources && !config.apiToken) {
                     Log.error(
-                        `${this.name}: Can't load sources because the apiKey is not set.`,
+                        `${this.name}: Can't load sources because the apiKey is not set.`
                     );
                 } else {
                     this.getPiholeData(
                         config,
                         { getQuerySources: config.sourcesCount },
-                        "PIHOLE_SOURCES",
+                        "PIHOLE_SOURCES"
                     );
                 }
             }
@@ -77,11 +77,15 @@ module.exports = NodeHelper.create({
                 self.sendSocketNotification(notification, data);
             } else {
                 Log.error(
-                    `${this.name}: Expected JSON but received ${response.headers.get("content-type")}`,
+                    `${
+                        this.name
+                    }: Expected JSON but received ${response.headers.get(
+                        "content-type"
+                    )}`
                 );
             }
         } catch (error) {
-            Log.error(`${this.name}: ${error}`),
+            Log.error(`${this.name}: ${error}`);
         }
-    },
+    }
 });
