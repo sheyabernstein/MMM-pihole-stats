@@ -81,5 +81,7 @@ module.exports = NodeHelper.create({
                 );
             }
         } catch (error) {
-            Log.error(`${this.name}: ${error}`)}},
+            Log.error(`${this.name}: ${error}`),
+        }
+    },
 });
