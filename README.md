@@ -44,8 +44,8 @@ Here is an example entry for `config.js`:
 
 | **Option**               | **Default**                    | **Description**                                                                                                                     |
 | ------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `apiURL`                 | `http://pi.hole/admin/api.php` | Absolute URL to Pi-hole admin API, including HTTP protocol and port                                                                                       |
-| `apiToken`               |                                | Pi-hole API Token (required for `showSources`)                                                                                 |
+| `apiURL`                 | `http://pi.hole/admin/api.php` | Absolute URL to Pi-hole admin API, including HTTP protocol and port                                                                 |
+| `apiToken`               |                                | Pi-hole API Token (required for `showSources`)                                                                                      |
 | `showSources`            | `true`                         | Show request sources (clients)                                                                                                      |
 | `sourcesCount`           | `10`                           | Number of returned entries for `showSources`                                                                                        |
 | `showSourceHostnameOnly` | `true`                         | Only show hostname if applicable without showing IP address                                                                         |
