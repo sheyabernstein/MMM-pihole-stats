@@ -4,11 +4,9 @@
   "description": "Pi-hole stats module for MagicMirror².",
   "main": "MMM-pihole-stats.js",
   "scripts": {
-    "format": "prettier --write --tab-width 4 **/*.{js,md}"
+    "prepare": "husky",
+    "prettify": "prettier --write --tab-width 4 **/*.{js,md}"
   },
-  "pre-commit": [
-    "format"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sheyabernstein/MMM-pihole-stats.git"
@@ -25,7 +23,7 @@
   },
   "homepage": "https://github.com/sheyabernstein/MMM-pihole-stats#readme",
   "devDependencies": {
-    "pre-commit": "^1.2.2",
+    "husky": "^9.0.11",
     "prettier": "^3.2.5"
   }
 }
