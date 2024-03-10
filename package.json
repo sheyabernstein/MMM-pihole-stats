@@ -1,29 +1,33 @@
 {
   "name": "mmm-pihole-stats",
-  "version": "1.0.0",
-  "description": "Pi-hole stats module for MagicMirror².",
-  "main": "MMM-pihole-stats.js",
-  "scripts": {
-    "prepare": "husky",
-    "prettify": "prettier --write --tab-width 4 **/*.{js,md}"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sheyabernstein/MMM-pihole-stats.git"
-  },
-  "keywords": [
-    "MagicMirror",
-    "Module",
-    "Pi-Hole"
-  ],
-  "author": "Sheya Bernstein",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sheyabernstein/MMM-pihole-stats/issues"
-  },
-  "homepage": "https://github.com/sheyabernstein/MMM-pihole-stats#readme",
-  "devDependencies": {
-    "husky": "^9.0.11",
-    "prettier": "^3.2.5"
-  }
+    "version": "1.0.0",
+    "description": "Pi-hole stats module for MagicMirror².",
+    "main": "MMM-pihole-stats.js",
+    "scripts": {
+        "prepare": "husky",
+        "prettify": "prettier --write .",
+        "lint": "prettier --check ."
+    },
+    "prettier": {
+        "tabWidth": 4
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sheyabernstein/MMM-pihole-stats.git"
+    },
+    "keywords": [
+        "MagicMirror",
+        "Module",
+        "Pi-Hole"
+    ],
+    "author": "Sheya Bernstein",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/sheyabernstein/MMM-pihole-stats/issues"
+    },
+    "homepage": "https://github.com/sheyabernstein/MMM-pihole-stats#readme",
+    "devDependencies": {
+        "husky": "^9.0.11",
+        "prettier": "^3.2.5"
+    }
 }
