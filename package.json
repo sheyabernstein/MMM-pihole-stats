@@ -10,6 +10,12 @@
         "precommit": "npm run prettify && npm run lint-staged",
         "prepare": "husky"
     },
+    "lint-staged": {
+        "**/*": [
+            "npm run prettify",
+            "git add"
+        ]
+    },
     "husky": {
         "hooks": {
             "pre-commit": "lint-staged"
@@ -20,12 +26,6 @@
         "semi": true,
         "tabWidth": 4,
         "trailingComma": "all"
-    },
-    "lint-staged": {
-        "**/*": [
-            "npm run prettify",
-            "git add"
-        ]
     },
     "repository": {
         "type": "git",
