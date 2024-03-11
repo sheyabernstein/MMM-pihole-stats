@@ -26,14 +26,14 @@ Without `config.showSources` enabled:
 
 > Feb 28, 2024: The `port` config option has been removed. The `apiURL` should now be an absolute URL, including the port and protocol.
 
-Here is an example entry for `config.js`:
+Here is an example entry for `config.js` with Pi-hole at `192.168.0.10` and port `8000`:
 
 ```js
 {
     module: "MMM-pihole-stats",
     position: "top_left", // Or any valid MagicMirror position.
     config: {
-      apiURL: "http://192.168.0.10/admin/api.php",
+      apiURL: "http://192.168.0.10:8000/admin/api.php",
       apiToken: "0123456789abcdef",
       // See 'Configuration options' for more information.
     }
