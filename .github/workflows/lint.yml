@@ -1,21 +1,21 @@
 name: Lint
 
 on:
-  push:
+    push:
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.head_ref }}
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
 
-    - name: Install dev dependencies
-      run: npm install --only=dev
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.head_ref }}
 
-    - name: Lint
-      run: npm run lint
+            - name: Install dev dependencies
+              run: npm install --only=dev
+
+            - name: Lint
+              run: npm run lint

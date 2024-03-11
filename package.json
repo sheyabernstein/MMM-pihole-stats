@@ -6,6 +6,8 @@
     "scripts": {
         "prettify": "prettier --write .",
         "lint": "prettier --check .",
+        "lint-staged": "lint-staged",
+        "precommit": "npm run prettify && npm run lint-staged",
         "prepare": "husky"
     },
     "husky": {
