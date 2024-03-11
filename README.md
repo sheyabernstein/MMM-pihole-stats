@@ -52,3 +52,46 @@ Here is an example entry for `config.js`:
 | `updateInterval`         | `600000`                       | Time in ms to wait until updating                                                                                                   |
 | `retryDelay`             | `30000`                        | Time in ms to wait before retry                                                                                                     |
 | `floatingPoints`         | `2`                            | Format floating point numbers to decimal points, e.g. `2` to format to 5.55. Setting this to `0` will show unlimited decimal points |
+
+## Contributing
+
+Thank you for considering contributing to this project! To maintain a consistent and high-quality codebase, we ask contributors to follow these guidelines:
+
+### Development Setup
+
+1. Install dependencies:
+    ```bash
+    npm install --with=dev
+    ```
+2. Install Git hooks:
+    ```bash
+    npm run install-hooks
+    ```
+
+### Making Changes
+
+-   Please make sure to create a new branch for your changes:
+    ```bash
+    git checkout -b feature-branch
+    ```
+-   All changes should be made in your feature branch, not directly in the `master` branch.
+
+### Submitting Changes
+
+#### Pull Requests (PRs):
+
+-   Fork the repository and create a new branch for your changes.
+-   Make your changes and test them thoroughly.
+-   Submit a pull request to the master branch of the original repository.
+-   Ensure your pull request passes all automated checks.
+
+### Important Notes
+
+#### No Direct Pushes:
+
+-   Do not push changes directly to the master branch.
+-   All changes must be made via a pull request.
+
+#### Continuous Integration (CI):
+
+-   Make sure your changes pass all CI checks before submitting a pull request.

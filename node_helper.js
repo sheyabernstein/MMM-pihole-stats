@@ -52,6 +52,13 @@ module.exports = NodeHelper.create({
 
         const url = new URL(config.apiURL);
 
+        if (config.port) {
+            url.port = config.port;
+            Log.warn(
+                `${this.name}: config.port is deprecated and will be removed in a later release.`,
+            );
+        }
+
         url.search = new URLSearchParams(params).toString();
         return url.toString();
     },
