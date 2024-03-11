@@ -1,5 +1,5 @@
 {
-  "name": "mmm-pihole-stats",
+    "name": "mmm-pihole-stats",
     "version": "1.0.0",
     "description": "Pi-hole stats module for MagicMirror².",
     "main": "MMM-pihole-stats.js",
@@ -11,6 +11,11 @@
     "prettier": {
         "tabWidth": 4
     },
+    "lint-staged":{
+    "**/*.{js,jsx,ts,tsx}":[
+      "npx run prettify"
+    ]
+  },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/sheyabernstein/MMM-pihole-stats.git"
