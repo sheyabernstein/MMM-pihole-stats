@@ -61,7 +61,7 @@ Thank you for considering contributing to this project! To maintain a consistent
 
 1. Install Dependencies:
     ```bash
-    npm install
+    npm install --with=dev
     ```
 2. Install Git hooks:
     ```bash
