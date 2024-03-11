@@ -59,7 +59,7 @@ Thank you for considering contributing to this project! To maintain a consistent
 
 ### Development Setup
 
-1. Install Dependencies:
+1. Install dependencies:
     ```bash
     npm install --with=dev
     ```
