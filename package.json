@@ -4,6 +4,7 @@
     "description": "Pi-hole stats module for MagicMirror².",
     "main": "MMM-pihole-stats.js",
     "scripts": {
+        "install-hooks": "npm install --ony=dev && npx husky install && npx husky add .husky/pre-commit \"npm run precommit\"",
         "prettify": "prettier --write .",
         "lint": "prettier --check .",
         "lint-staged": "lint-staged",
