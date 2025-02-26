@@ -1,98 +1,152 @@
 const Log = require("logger");
 const NodeHelper = require("node_helper");
+const fetch = require("node-fetch"); // Ensure node-fetch is installed
+const https = require("https"); // Required for HTTPS agent
 
 module.exports = NodeHelper.create({
-    start() {
-        Log.info(`Starting node_helper for module [${this.name}]`);
-    },
+  // Store the session ID (SID) from authentication
+  sid: null,
 
-    socketNotificationReceived(notification, payload) {
-        if (notification === "GET_PIHOLE") {
-            const config = payload.config;
+  start() {
+    Log.info(`Starting node_helper for module [${this.name}]`);
+  },
 
-            if (!this.isValidURL(config.apiURL)) {
-                Log.error(`${this.name}: The apiURL is not a valid URL`);
-                return;
-            }
+  socketNotificationReceived(notification, payload) {
+    if (notification === "GET_PIHOLE") {
+      const config = payload.config;
 
-            Log.debug(`Notification: ${notification} Payload: ${payload}`);
-            this.getPiholeData(config, { summary: 1 }, "PIHOLE_DATA");
+      if (!this.isValidURL(config.apiURL)) {
+        Log.error(`${this.name}: The apiURL is not a valid URL`);
+        return;
+      }
 
-            if (config.showSources && config.sourcesCount > 0) {
-                if (config.showSources && !config.apiToken) {
-                    Log.error(
-                        `${this.name}: Can't load sources because the apiKey is not set.`,
-                    );
-                } else {
-                    this.getPiholeData(
-                        config,
-                        { getQuerySources: config.sourcesCount },
-                        "PIHOLE_SOURCES",
-                    );
-                }
-            }
-        }
-    },
+      Log.debug(`Notification: ${notification} Payload: ${JSON.stringify(payload)}`);
+      
+      // If an API key is provided and we haven't authenticated yet, authenticate first.
+      if (config.apiKey && !this.sid) {
+        this.authenticate(config).then(() => {
+          this.requestData(config);
+        });
+      } else {
+        this.requestData(config);
+      }
+    }
+  },
 
-    isValidURL(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    },
+  // Separate function to make the requests (for both summary and top clients)
+  requestData(config) {
+    // Get summary data using the /stats/summary endpoint.
+    this.getPiholeData(config, { summary: 1 }, "PIHOLE_DATA");
 
-    buildURL(config, params) {
-        params = params || {};
+    // Get top clients (sources) if enabled using the /stats/top_clients endpoint.
+    if (config.showSources && config.sourcesCount > 0) {
+      if (!config.apiKey) {
+        Log.error(`${this.name}: Can't load sources because the apiKey is not set.`);
+      } else {
+        this.getPiholeData(
+          config,
+          { getQuerySources: config.sourcesCount },
+          "PIHOLE_SOURCES"
+        );
+      }
+    }
+  },
 
-        if (config.apiToken && !params.hasOwnProperty("auth")) {
-            params.auth = config.apiToken;
-        }
+  isValidURL(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  },
 
-        const url = new URL(config.apiURL);
+  // Build a URL from the base apiURL and any query parameters.
+  // For summary: use "/stats/summary"
+  // For query sources: use "/stats/top_clients" with a count parameter.
+  buildURL(config, params) {
+    params = params || {};
+    let url = new URL(config.apiURL);
+    if (params.summary !== undefined) {
+      delete params.summary;
+      url.pathname = url.pathname.replace(/\/?$/, "/stats/summary");
+      url.search = new URLSearchParams(params).toString();
+    } else if (params.getQuerySources !== undefined) {
+      delete params.getQuerySources;
+      url.pathname = url.pathname.replace(/\/?$/, "/stats/top_clients");
+      url.search = new URLSearchParams({ count: config.sourcesCount }).toString();
+    } else {
+      url.search = new URLSearchParams(params).toString();
+    }
+    return url.toString();
+  },
 
-        if (config.port) {
-            url.port = config.port;
-            Log.warn(
-                `${this.name}: config.port is deprecated and will be removed in a later release.`,
-            );
-        }
+  // Helper: returns fetch options, including an HTTPS agent if necessary.
+  getFetchOptions(urlStr, extraOptions = {}) {
+    const urlObj = new URL(urlStr);
+    const options = { ...extraOptions };
+    if (urlObj.protocol === "https:") {
+      options.agent = new https.Agent({ rejectUnauthorized: false });
+    }
+    return options;
+  },
 
-        url.search = new URLSearchParams(params).toString();
-        return url.toString();
-    },
+  // Authenticate with Pi-hole v6 and store the returned session ID (SID)
+  async authenticate(config) {
+    let authURL;
+    try {
+      const baseURL = new URL(config.apiURL);
+      const basePath = baseURL.pathname.replace(/\/$/, ""); // Remove trailing slash if any
+      authURL = `${baseURL.origin}${basePath}/auth`;
+    } catch (e) {
+      Log.error(`${this.name}: Error constructing auth URL: ${e}`);
+      return;
+    }
 
-    async getPiholeData(config, params, notification) {
-        const self = this,
-            url = self.buildURL(config, params),
-            headers = { Referer: url };
+    try {
+      const options = this.getFetchOptions(authURL, {
+        method: "POST",
+        body: JSON.stringify({ password: config.apiKey }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const response = await fetch(authURL, options);
+      if (!response.ok) {
+        throw new Error("Authentication failed with status " + response.status);
+      }
+      const data = await response.json();
+      // The v6 API returns session info under data.session
+      this.sid = data.session.sid;
+      Log.info(`${this.name}: Authenticated successfully. SID obtained.`);
+    } catch (error) {
+      Log.error(`${this.name}: Error during authentication: ${error}`);
+    }
+  },
 
-        this.sendSocketNotification("LOADING_PIHOLE_URL", url);
+  // Retrieve data from Pi-hole using the new API and include the SID header if available.
+  async getPiholeData(config, params, notification) {
+    const url = this.buildURL(config, params);
+    const headers = { Referer: url };
+    if (this.sid) {
+      headers.sid = this.sid;
+    }
+    this.sendSocketNotification("LOADING_PIHOLE_URL", url);
 
-        try {
-            const response = await fetch(url, { headers });
-            if (!response.ok) {
-                Log.error(`${this.name}: HTTP Error ${response.status}`);
-            }
-            if (
-                response.headers
-                    .get("content-type")
-                    .includes("application/json")
-            ) {
-                const data = await response.json();
-                self.sendSocketNotification(notification, data);
-            } else {
-                Log.error(
-                    `${
-                        this.name
-                    }: Expected JSON but received ${response.headers.get(
-                        "content-type",
-                    )}`,
-                );
-            }
-        } catch (error) {
-            Log.error(`${this.name}: ${error}`);
-        }
-    },
+    try {
+      const options = this.getFetchOptions(url, { headers });
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        Log.error(`${this.name}: HTTP Error ${response.status}`);
+      }
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        const data = await response.json();
+        this.sendSocketNotification(notification, data);
+      } else {
+        Log.error(
+          `${this.name}: Expected JSON but received ${response.headers.get("content-type")}`
+        );
+      }
+    } catch (error) {
+      Log.error(`${this.name}: ${error}`);
+    }
+  },
 });

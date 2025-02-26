@@ -9,7 +9,7 @@ Module.register("MMM-pihole-stats", {
     // Default module config.
     defaults: {
         apiKey: "",
-        apiURL: "http://pi.hole/admin/api.php",
+        apiURL: "http://pi.hole/api",
         showSources: true,
         sourcesCount: 10,
         showSourceHostnameOnly: true,
@@ -153,17 +153,18 @@ Module.register("MMM-pihole-stats", {
         }, nextLoad);
     },
 
-    processSummary(data) {
-        if (!data) {
-            // Did not receive usable new data.
-            return;
-        }
-
-        this.domains_being_blocked = data.domains_being_blocked || "0";
-        this.dns_queries_today = data.dns_queries_today || "0";
-        this.ads_blocked_today = data.ads_blocked_today || "0";
-        this.ads_percentage_today = data.ads_percentage_today || "0.0";
-    },
+	processSummary(data) {
+	    if (!data) {
+	        // Did not receive usable new data.
+	        return;
+	    }
+	    
+	    // Update the module variables using the new API structure.
+	    this.domains_being_blocked = data.gravity && data.gravity.domains_being_blocked ? data.gravity.domains_being_blocked : "0";
+	    this.dns_queries_today = data.queries && data.queries.total ? data.queries.total : "0";
+	    this.ads_blocked_today = data.queries && data.queries.blocked ? data.queries.blocked : "0";
+	    this.ads_percentage_today = data.queries && data.queries.percent_blocked ? data.queries.percent_blocked : "0.0";
+	},
 
     processSources(data) {
         if (!data) {
