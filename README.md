@@ -8,44 +8,7 @@ Pi-hole stats module for MagicMirror².
 
 This update adapts MMM-pihole-stats to work with the new Pi-hole v6 API. The module now uses a REST-based authentication flow and updated endpoints to fetch accurate statistics from your Pi-hole instance.
 
-**Changes:**
 
-- **Node Helper Update:**
-  - **Authentication Flow:**  
-    The module now sends a `POST` request to the `/auth` endpoint (derived from the configured `apiURL`) with a JSON payload containing your Pi-hole password (using the `apiKey` property). The returned session ID (SID) is stored and then sent via the `sid` header with every subsequent API call.
-    
-  - **Endpoint Adjustments:**  
-    Instead of calling the legacy `/admin/api.php` endpoint with URL parameters, the module now uses:
-    - **Summary Data:** A `GET` request to `/stats/summary`
-    - **Top Clients (Query Sources):** A `GET` request to `/stats/top_clients?count={sourcesCount}`
-  
-  - **HTTPS Support:**  
-    An HTTPS agent is now used when the configured `apiURL` uses HTTPS. This agent disables certificate validation (useful for self-signed certificates).
-
-- **Front-end Adjustments:**
-  - **Configuration:**  
-    The default configuration now recommends setting `apiURL` to the new v6 endpoint. For example:
-    ```js
-    {
-      module: "MMM-pihole-stats",
-      position: "top_left",
-      config: {
-        apiURL: "https://pi.hole:443/api",
-        apiKey: "", // Use your Pi-hole password or application password
-        ...
-      }
-    }
-    ```
-  
-  - **Summary Data Parsing:**  
-    The `processSummary` function has been updated to match the new API JSON structure:
-    - **DNS Queries Today:** now taken from `queries.total`
-    - **Ads Blocked Today:** now taken from `queries.blocked`
-    - **Ads Percentage Today:** now taken from `queries.percent_blocked`
-    - **Domains Being Blocked:** now taken from `gravity.domains_being_blocked`
-
-**Result:**  
-After this update, MMM-pihole-stats successfully authenticates with Pi-hole v6, retrieves accurate statistics from the updated endpoints, and displays real-time data on your MagicMirror dashboard.
 
 ## Screenshots
 
