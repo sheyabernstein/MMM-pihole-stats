@@ -1,6 +1,5 @@
 const Log = require("logger");
 const NodeHelper = require("node_helper");
-const fetch = require("node-fetch"); // Ensure node-fetch is installed
 const https = require("https"); // For HTTPS agent
 
 module.exports = NodeHelper.create({
