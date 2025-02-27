@@ -1,7 +1,7 @@
 const Log = require("logger");
 const NodeHelper = require("node_helper");
 const fetch = require("node-fetch"); // Ensure node-fetch is installed
-const https = require("https"); // Required for HTTPS agent
+const https = require("https"); // For HTTPS agent
 
 module.exports = NodeHelper.create({
   // Store the session ID (SID) from authentication
@@ -123,6 +123,7 @@ module.exports = NodeHelper.create({
   },
 
   // Retrieve data from Pi-hole using the new API and include the SID header if available.
+  // If a 401 Unauthorized error occurs, reauthenticate and retry once.
   async getPiholeData(config, params, notification) {
     const url = this.buildURL(config, params);
     const headers = { Referer: url };
@@ -132,11 +133,22 @@ module.exports = NodeHelper.create({
     this.sendSocketNotification("LOADING_PIHOLE_URL", url);
 
     try {
-      const options = this.getFetchOptions(url, { headers });
-      const response = await fetch(url, options);
+      let options = this.getFetchOptions(url, { headers });
+      let response = await fetch(url, options);
+
+      // If unauthorized, attempt to reauthenticate and retry once.
+      if (response.status === 401) {
+        Log.warn(`${this.name}: Received 401 Unauthorized. Reauthenticating...`);
+        await this.authenticate(config);
+        headers.sid = this.sid; // Update header with new SID.
+        options = this.getFetchOptions(url, { headers });
+        response = await fetch(url, options);
+      }
+
       if (!response.ok) {
         Log.error(`${this.name}: HTTP Error ${response.status}`);
       }
+
       if (response.headers.get("content-type")?.includes("application/json")) {
         const data = await response.json();
         this.sendSocketNotification(notification, data);
