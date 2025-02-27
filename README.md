@@ -2,11 +2,7 @@
 
 Pi-hole stats module for MagicMirror².
 
-## Changelog
-
-### 2025/02/26 - Support for Pi-hole v6 API
-
-This update adapts MMM-pihole-stats to work with the new Pi-hole v6 API. The module now uses a REST-based authentication flow and updated endpoints to fetch accurate statistics from your Pi-hole instance.
+> :warning: **Pi-Hole v6 Breaking Changes**: Pi-hole v6 has revamped its API. The module now uses a REST-based authentication flow and updated endpoints to fetch accurate statistics from your Pi-hole instance. Thanks [@ChrisF1976](https://github.com/ChrisF1976).
 
 ## Screenshots
 
@@ -40,7 +36,7 @@ Here is an example entry for `config.js` with Pi-hole at `192.168.0.10` and port
     position: "top_left", // Or any valid MagicMirror position.
     config: {
       apiURL: "https://pi.hole:443/api", //find or modify api port in (http://pi.hole/api/docs/#)
-      apiKey: "your pi.hole password",
+      apiKey: "your pi.hole password or app password",
       // See 'Configuration options' for more information.
     }
 },
