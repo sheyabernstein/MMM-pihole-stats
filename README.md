@@ -36,7 +36,7 @@ Here is an example entry for `config.js` with Pi-hole at `192.168.0.10` and port
     position: "top_left", // Or any valid MagicMirror position.
     config: {
       apiURL: "https://pi.hole:443/api", //find or modify api port in (http://pi.hole/api/docs/#)
-      apiKey: "your pi.hole password or app password",
+      apiToken: "your pi.hole password or app password",
       // See 'Configuration options' for more information.
     }
 },
