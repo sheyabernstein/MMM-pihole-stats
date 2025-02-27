@@ -22,7 +22,6 @@ module.exports = NodeHelper.create({
 
       Log.debug(`Notification: ${notification} Payload: ${JSON.stringify(payload)}`);
       
-      // If an API key is provided and we haven't authenticated yet, authenticate first.
       if (config.apiKey && !this.sid) {
         this.authenticate(config).then(() => {
           this.requestData(config);
@@ -61,7 +60,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  // Build a URL from the base apiURL and any query parameters.
+  // Build a URL from the base apiURL and query parameters.
   // For summary: use "/stats/summary"
   // For query sources: use "/stats/top_clients" with a count parameter.
   buildURL(config, params) {
@@ -114,7 +113,6 @@ module.exports = NodeHelper.create({
         throw new Error("Authentication failed with status " + response.status);
       }
       const data = await response.json();
-      // The v6 API returns session info under data.session
       this.sid = data.session.sid;
       Log.info(`${this.name}: Authenticated successfully. SID obtained.`);
     } catch (error) {
@@ -122,7 +120,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  // Retrieve data from Pi-hole using the new API and include the SID header if available.
+  // Retrieve data from Pi-hole using the new API and include the SID header.
   // If a 401 Unauthorized error occurs, reauthenticate and retry once.
   async getPiholeData(config, params, notification) {
     const url = this.buildURL(config, params);
