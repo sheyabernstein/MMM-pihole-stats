@@ -16,10 +16,9 @@ Module.register("MMM-pihole-stats", {
 
         updateInterval: 10 * 60 * 1000, // every 10 minutes
         animationSpeed: 1000,
-
         floatingPoints: 2,
 
-        retryDelay: 1000 * 30,
+        retryDelay: 30 * 1000,
         initialLoadDelay: 0,
     },
 
@@ -67,7 +66,8 @@ Module.register("MMM-pihole-stats", {
             %)`;
         wrapper.appendChild(header);
 
-        if (this.top_sources && Object.keys(this.top_sources).length) {
+        // Display source (client) data if available.
+        if (this.top_sources && this.top_sources.length) {
             const table = document.createElement("table");
             table.className = "xsmall light";
             wrapper.appendChild(table);
@@ -75,38 +75,38 @@ Module.register("MMM-pihole-stats", {
             const thead = document.createElement("thead");
             table.appendChild(thead);
 
-            const row = document.createElement("tr");
-            thead.appendChild(row);
+            const headerRow = document.createElement("tr");
+            thead.appendChild(headerRow);
 
-            const sourceCell = document.createElement("th");
-            sourceCell.innerHTML = "Client";
-            row.appendChild(sourceCell);
+            const clientHeader = document.createElement("th");
+            clientHeader.innerHTML = "Client";
+            headerRow.appendChild(clientHeader);
 
-            const countCell = document.createElement("th");
-            countCell.innerHTML = "Requests";
-            row.appendChild(countCell);
+            const countHeader = document.createElement("th");
+            countHeader.innerHTML = "Requests";
+            headerRow.appendChild(countHeader);
 
             const tbody = document.createElement("tbody");
             table.appendChild(tbody);
 
-            for (let source in this.top_sources) {
-                const adCount = this.top_sources[source];
-
+            // Iterate over the array of client objects.
+            this.top_sources.forEach((client) => {
+                let displayName = client.name;
                 if (this.config.showSourceHostnameOnly) {
-                    source = source.split("|")[0];
+                    displayName = client.name.split("|")[0];
                 }
 
                 const row = document.createElement("tr");
                 tbody.appendChild(row);
 
-                const sourceCell = document.createElement("td");
-                sourceCell.innerHTML = source;
-                row.appendChild(sourceCell);
+                const clientCell = document.createElement("td");
+                clientCell.innerHTML = displayName;
+                row.appendChild(clientCell);
 
-                const countCell = document.createElement("td");
-                countCell.innerHTML = this.formatInt(adCount);
-                row.appendChild(countCell);
-            }
+                const reqCell = document.createElement("td");
+                reqCell.innerHTML = this.formatInt(client.count);
+                row.appendChild(reqCell);
+            });
         }
 
         const footer = document.createElement("div");
@@ -122,7 +122,6 @@ Module.register("MMM-pihole-stats", {
 
     updateStats() {
         Log.info(`${this.name}: Getting data`);
-
         this.sendSocketNotification("GET_PIHOLE", {
             config: this.config,
         });
@@ -136,7 +135,6 @@ Module.register("MMM-pihole-stats", {
         } else if (notification === "PIHOLE_SOURCES") {
             this.processSources(payload);
         }
-
         this.updateDom(this.config.animationSpeed);
     },
 
@@ -145,7 +143,6 @@ Module.register("MMM-pihole-stats", {
         if (typeof delay !== "undefined" && delay >= 0) {
             nextLoad = delay;
         }
-
         const self = this;
         setTimeout(() => {
             self.updateStats();
@@ -153,25 +150,21 @@ Module.register("MMM-pihole-stats", {
         }, nextLoad);
     },
 
-	processSummary(data) {
-	    if (!data) {
-	        // Did not receive usable new data.
-	        return;
-	    }
-	    
-	    // Update the module variables using the new API structure.
-	    this.domains_being_blocked = data.gravity && data.gravity.domains_being_blocked ? data.gravity.domains_being_blocked : "0";
-	    this.dns_queries_today = data.queries && data.queries.total ? data.queries.total : "0";
-	    this.ads_blocked_today = data.queries && data.queries.blocked ? data.queries.blocked : "0";
-	    this.ads_percentage_today = data.queries && data.queries.percent_blocked ? data.queries.percent_blocked : "0.0";
-	},
+    processSummary(data) {
+        if (!data) {
+            return;
+        }
+        this.domains_being_blocked = data.gravity && data.gravity.domains_being_blocked ? data.gravity.domains_being_blocked : "0";
+        this.dns_queries_today = data.queries && data.queries.total ? data.queries.total : "0";
+        this.ads_blocked_today = data.queries && data.queries.blocked ? data.queries.blocked : "0";
+        this.ads_percentage_today = data.queries && data.queries.percent_blocked ? data.queries.percent_blocked : "0.0";
+    },
 
     processSources(data) {
         if (!data) {
-            // Did not receive usable new data.
             return;
         }
-
-        this.top_sources = data.top_sources || [];
+        // Use the "top_clients" property if available; fallback to "clients" or "top_sources".
+        this.top_sources = data.top_clients || data.clients || data.top_sources || [];
     },
 });
