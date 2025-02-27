@@ -154,10 +154,18 @@ Module.register("MMM-pihole-stats", {
         if (!data) {
             return;
         }
-        this.domains_being_blocked = data.gravity && data.gravity.domains_being_blocked ? data.gravity.domains_being_blocked : "0";
-        this.dns_queries_today = data.queries && data.queries.total ? data.queries.total : "0";
-        this.ads_blocked_today = data.queries && data.queries.blocked ? data.queries.blocked : "0";
-        this.ads_percentage_today = data.queries && data.queries.percent_blocked ? data.queries.percent_blocked : "0.0";
+        this.domains_being_blocked =
+            data.gravity && data.gravity.domains_being_blocked
+                ? data.gravity.domains_being_blocked
+                : "0";
+        this.dns_queries_today =
+            data.queries && data.queries.total ? data.queries.total : "0";
+        this.ads_blocked_today =
+            data.queries && data.queries.blocked ? data.queries.blocked : "0";
+        this.ads_percentage_today =
+            data.queries && data.queries.percent_blocked
+                ? data.queries.percent_blocked
+                : "0.0";
     },
 
     processSources(data) {
@@ -165,6 +173,7 @@ Module.register("MMM-pihole-stats", {
             return;
         }
         // Use the "top_clients" property if available; fallback to "clients" or "top_sources".
-        this.top_sources = data.top_clients || data.clients || data.top_sources || [];
+        this.top_sources =
+            data.top_clients || data.clients || data.top_sources || [];
     },
 });
