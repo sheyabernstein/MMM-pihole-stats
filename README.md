@@ -33,7 +33,7 @@ Here is an example entry for `config.js`:
     module: "MMM-pihole-stats",
     position: "top_left", // Or any valid MagicMirror position.
     config: {
-      apiURL: "https://pi.hole:443/api", //find or modify api port in (http://pi.hole/api/docs/#)
+      apiURL: "http://pi.hole:443/api", // find or modify api port in (http://pi.hole/api/docs/#)
       apiKey: "your pi.hole password or app password",
       // See 'Configuration options' for more information.
     }
@@ -42,16 +42,16 @@ Here is an example entry for `config.js`:
 
 ## Configuration Options
 
-| **Option**               | **Default**           | **Description**                                                                                                                     |
-| ------------------------ | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `apiURL`                 | `https://pi.hole/api` | Absolute URL to Pi-hole API, including HTTP protocol and port                                                                       |
-| `apiKey`                 |                       | Pi-hole password or app password                                                                                                    |
-| `showSources`            | `true`                | Show request sources (clients)                                                                                                      |
-| `sourcesCount`           | `10`                  | Number of returned entries for `showSources`                                                                                        |
-| `showSourceHostnameOnly` | `true`                | Only show hostname if applicable without showing IP address                                                                         |
-| `updateInterval`         | `600000`              | Time in ms to wait until updating                                                                                                   |
-| `retryDelay`             | `30000`               | Time in ms to wait before retry                                                                                                     |
-| `floatingPoints`         | `2`                   | Format floating point numbers to decimal points, e.g. `2` to format to 5.55. Setting this to `0` will show unlimited decimal points |
+| **Option**               | **Default**          | **Description**                                                                                                                     |
+| ------------------------ | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `apiURL`                 | `http://pi.hole/api` | Absolute URL to Pi-hole API, including HTTP protocol and port                                                                       |
+| `apiKey`                 |                      | Pi-hole password or app password                                                                                                    |
+| `showSources`            | `true`               | Show request sources (clients)                                                                                                      |
+| `sourcesCount`           | `10`                 | Number of returned entries for `showSources`                                                                                        |
+| `showSourceHostnameOnly` | `true`               | Only show hostname if applicable without showing IP address                                                                         |
+| `updateInterval`         | `600000`             | Time in ms to wait until updating                                                                                                   |
+| `retryDelay`             | `30000`              | Time in ms to wait before retry                                                                                                     |
+| `floatingPoints`         | `2`                  | Format floating point numbers to decimal points, e.g. `2` to format to 5.55. Setting this to `0` will show unlimited decimal points |
 
 ## Contributing
 

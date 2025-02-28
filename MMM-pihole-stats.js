@@ -61,9 +61,8 @@ Module.register("MMM-pihole-stats", {
         const header = document.createElement("div");
         header.className = "small bright";
         header.innerHTML = `${this.formatInt(this.ads_blocked_today)}
-            ads blocked today. (
-            ${this.formatFloat(this.ads_percentage_today)}
-            %)`;
+            ads blocked today.
+            (${this.formatFloat(this.ads_percentage_today)}%)`;
         wrapper.appendChild(header);
 
         // Display source (client) data if available.
