@@ -16,8 +16,8 @@ Without `config.showSources` enabled:
 
 ## Dependencies
 
-- [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
-- [Pi-hole](https://pi-hole.net)
+-   [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
+-   [Pi-hole](https://pi-hole.net)
 
 ## Installation
 
@@ -36,7 +36,7 @@ Here is an example entry for `config.js` with Pi-hole at `192.168.0.10` and port
     position: "top_left", // Or any valid MagicMirror position.
     config: {
       apiURL: "https://pi.hole:443/api", //find or modify api port in (http://pi.hole/api/docs/#)
-      apiToken: "your pi.hole password or app password",
+      apiKey: "your pi.hole password or app password",
       // See 'Configuration options' for more information.
     }
 },
@@ -47,7 +47,7 @@ Here is an example entry for `config.js` with Pi-hole at `192.168.0.10` and port
 | **Option**               | **Default**                    | **Description**                                                                                                                     |
 | ------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `apiURL`                 | `http://pi.hole/admin/api.php` | Absolute URL to Pi-hole admin API, including HTTP protocol and port                                                                 |
-| `apiToken`               |                                | Pi-hole API Token (required for `showSources`)                                                                                      |
+| `apiKey`                 |                                | Pi-hole password or app password                                                                                                    |
 | `showSources`            | `true`                         | Show request sources (clients)                                                                                                      |
 | `sourcesCount`           | `10`                           | Number of returned entries for `showSources`                                                                                        |
 | `showSourceHostnameOnly` | `true`                         | Only show hostname if applicable without showing IP address                                                                         |
@@ -72,28 +72,28 @@ Thank you for considering contributing to this project! To maintain a consistent
 
 ### Making Changes
 
-- Please make sure to create a new branch for your changes:
+-   Please make sure to create a new branch for your changes:
     ```bash
     git checkout -b feature-branch
     ```
-- All changes should be made in your feature branch, not directly in the `master` branch.
+-   All changes should be made in your feature branch, not directly in the `master` branch.
 
 ### Submitting Changes
 
 #### Pull Requests (PRs):
 
-- Fork the repository and create a new branch for your changes.
-- Make your changes and test them thoroughly.
-- Submit a pull request to the master branch of the original repository.
-- Ensure your pull request passes all automated checks.
+-   Fork the repository and create a new branch for your changes.
+-   Make your changes and test them thoroughly.
+-   Submit a pull request to the master branch of the original repository.
+-   Ensure your pull request passes all automated checks.
 
 ### Important Notes
 
 #### No Direct Pushes:
 
-- Do not push changes directly to the master branch.
-- All changes must be made via a pull request.
+-   Do not push changes directly to the master branch.
+-   All changes must be made via a pull request.
 
 #### Continuous Integration (CI):
 
-- Make sure your changes pass all CI checks before submitting a pull request.
+-   Make sure your changes pass all CI checks before submitting a pull request.
