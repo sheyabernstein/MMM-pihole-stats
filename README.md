@@ -2,7 +2,7 @@
 
 Pi-hole stats module for MagicMirror².
 
-> :warning: **Pi-Hole v6 Breaking Changes**: Pi-hole v6 has revamped its API. The module now uses a REST-based authentication flow and updated endpoints to fetch accurate statistics from your Pi-hole instance. Thanks [@ChrisF1976](https://github.com/ChrisF1976).
+> :warning: **Pi-Hole v6 Breaking Changes**: Pi-hole v6 has revamped its API. The module now uses a REST-based authentication flow and updated endpoints to fetch accurate statistics from your Pi-hole instance. Please update your configuration accordingly. Thanks [@ChrisF1976](https://github.com/ChrisF1976).
 
 ## Screenshots
 
@@ -16,8 +16,8 @@ Without `config.showSources` enabled:
 
 ## Dependencies
 
--   [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
--   [Pi-hole](https://pi-hole.net)
+- [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
+- [Pi-hole](https://pi-hole.net)
 
 ## Installation
 
@@ -70,28 +70,28 @@ Thank you for considering contributing to this project! To maintain a consistent
 
 ### Making Changes
 
--   Please make sure to create a new branch for your changes:
+- Please make sure to create a new branch for your changes:
     ```bash
     git checkout -b feature-branch
     ```
--   All changes should be made in your feature branch, not directly in the `master` branch.
+- All changes should be made in your feature branch, not directly in the `master` branch.
 
 ### Submitting Changes
 
 #### Pull Requests (PRs):
 
--   Fork the repository and create a new branch for your changes.
--   Make your changes and test them thoroughly.
--   Submit a pull request to the master branch of the original repository.
--   Ensure your pull request passes all automated checks.
+- Fork the repository and create a new branch for your changes.
+- Make your changes and test them thoroughly.
+- Submit a pull request to the master branch of the original repository.
+- Ensure your pull request passes all automated checks.
 
 ### Important Notes
 
 #### No Direct Pushes:
 
--   Do not push changes directly to the master branch.
--   All changes must be made via a pull request.
+- Do not push changes directly to the master branch.
+- All changes must be made via a pull request.
 
 #### Continuous Integration (CI):
 
--   Make sure your changes pass all CI checks before submitting a pull request.
+- Make sure your changes pass all CI checks before submitting a pull request.
