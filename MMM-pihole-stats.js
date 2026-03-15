@@ -128,11 +128,20 @@ Module.register("MMM-pihole-stats", {
 
     // Handle node helper response
     socketNotificationReceived(notification, payload) {
+        // Check if this response is for this instance by matching apiURL
+        if (
+            !payload ||
+            !payload.apiURL ||
+            payload.apiURL !== this.config.apiURL
+        ) {
+            return;
+        }
+
         if (notification === "PIHOLE_DATA") {
-            this.processSummary(payload);
+            this.processSummary(payload.data);
             this.loaded = true;
         } else if (notification === "PIHOLE_SOURCES") {
-            this.processSources(payload);
+            this.processSources(payload.data);
         }
         this.updateDom(this.config.animationSpeed);
     },
