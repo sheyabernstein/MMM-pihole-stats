@@ -3,8 +3,8 @@ const NodeHelper = require("node_helper");
 const https = require("https"); // For HTTPS agent
 
 module.exports = NodeHelper.create({
-    // Store the session ID (SID) from authentication
-    sid: null,
+    // Store session IDs (SID) per apiURL to support multiple instances
+    sidCache: {},
 
     start() {
         Log.info(`Starting node_helper for module [${this.name}]`);
@@ -23,7 +23,7 @@ module.exports = NodeHelper.create({
                 `Notification: ${notification} Payload: ${JSON.stringify(payload)}`,
             );
 
-            if (config.apiKey && !this.sid) {
+            if (config.apiKey && !this.sidCache[config.apiURL]) {
                 this.authenticate(config).then(() => {
                     this.requestData(config);
                 });
@@ -120,7 +120,7 @@ module.exports = NodeHelper.create({
                 );
             }
             const data = await response.json();
-            this.sid = data.session.sid;
+            this.sidCache[config.apiURL] = data.session.sid;
             Log.info(`${this.name}: Authenticated successfully. SID obtained.`);
         } catch (error) {
             Log.error(`${this.name}: Error during authentication: ${error}`);
@@ -132,8 +132,8 @@ module.exports = NodeHelper.create({
     async getPiholeData(config, params, notification) {
         const url = this.buildURL(config, params);
         const headers = { Referer: url };
-        if (this.sid) {
-            headers.sid = this.sid;
+        if (this.sidCache[config.apiURL]) {
+            headers.sid = this.sidCache[config.apiURL];
         }
         this.sendSocketNotification("LOADING_PIHOLE_URL", url);
 
@@ -147,7 +147,7 @@ module.exports = NodeHelper.create({
                     `${this.name}: Received 401 Unauthorized. Reauthenticating...`,
                 );
                 await this.authenticate(config);
-                headers.sid = this.sid; // Update header with new SID.
+                headers.sid = this.sidCache[config.apiURL]; // Update header with new SID.
                 options = this.getFetchOptions(url, { headers });
                 response = await fetch(url, options);
             }
@@ -162,7 +162,10 @@ module.exports = NodeHelper.create({
                     ?.includes("application/json")
             ) {
                 const data = await response.json();
-                this.sendSocketNotification(notification, data);
+                this.sendSocketNotification(notification, {
+                    apiURL: config.apiURL,
+                    data: data,
+                });
             } else {
                 Log.error(
                     `${this.name}: Expected JSON but received ${response.headers.get("content-type")}`,
