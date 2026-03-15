@@ -129,7 +129,11 @@ Module.register("MMM-pihole-stats", {
     // Handle node helper response
     socketNotificationReceived(notification, payload) {
         // Check if this response is for this instance by matching apiURL
-        if (!payload || !payload.apiURL || payload.apiURL !== this.config.apiURL) {
+        if (
+            !payload ||
+            !payload.apiURL ||
+            payload.apiURL !== this.config.apiURL
+        ) {
             return;
         }
 
