@@ -15,7 +15,9 @@ module.exports = NodeHelper.create({
             const config = payload.config;
 
             if (!this.isValidURL(config.apiURL)) {
-                Log.error(`${this.name} [${config.apiURL}]: The apiURL is not a valid URL`);
+                Log.error(
+                    `${this.name} [${config.apiURL}]: The apiURL is not a valid URL`,
+                );
                 return;
             }
 
@@ -103,7 +105,9 @@ module.exports = NodeHelper.create({
             const basePath = baseURL.pathname.replace(/\/$/, ""); // Remove trailing slash if any
             authURL = `${baseURL.origin}${basePath}/auth`;
         } catch (e) {
-            Log.error(`${this.name} [${config.apiURL}]: Error constructing auth URL: ${e}`);
+            Log.error(
+                `${this.name} [${config.apiURL}]: Error constructing auth URL: ${e}`,
+            );
             return;
         }
 
@@ -121,9 +125,13 @@ module.exports = NodeHelper.create({
             }
             const data = await response.json();
             this.sidCache[config.apiURL] = data.session.sid;
-            Log.info(`${this.name} [${config.apiURL}]: Authenticated successfully. SID obtained.`);
+            Log.info(
+                `${this.name} [${config.apiURL}]: Authenticated successfully. SID obtained.`,
+            );
         } catch (error) {
-            Log.error(`${this.name} [${config.apiURL}]: Error during authentication: ${error}`);
+            Log.error(
+                `${this.name} [${config.apiURL}]: Error during authentication: ${error}`,
+            );
         }
     },
 
@@ -153,7 +161,9 @@ module.exports = NodeHelper.create({
             }
 
             if (!response.ok) {
-                Log.error(`${this.name} [${config.apiURL}]: HTTP Error ${response.status}`);
+                Log.error(
+                    `${this.name} [${config.apiURL}]: HTTP Error ${response.status}`,
+                );
             }
 
             if (
