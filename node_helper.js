@@ -15,12 +15,14 @@ module.exports = NodeHelper.create({
             const config = payload.config;
 
             if (!this.isValidURL(config.apiURL)) {
-                Log.error(`${this.name}: The apiURL is not a valid URL`);
+                Log.error(
+                    `${this.name} [${config.apiURL}]: The apiURL is not a valid URL`,
+                );
                 return;
             }
 
             Log.debug(
-                `Notification: ${notification} Payload: ${JSON.stringify(payload)}`,
+                `[${config.apiURL}] Notification: ${notification} Payload: ${JSON.stringify(payload)}`,
             );
 
             if (config.apiKey && !this.sidCache[config.apiURL]) {
@@ -42,7 +44,7 @@ module.exports = NodeHelper.create({
         if (config.showSources && config.sourcesCount > 0) {
             if (!config.apiKey) {
                 Log.error(
-                    `${this.name}: Can't load sources because the apiKey is not set.`,
+                    `${this.name} [${config.apiURL}]: Can't load sources because the apiKey is not set.`,
                 );
             } else {
                 this.getPiholeData(
@@ -103,7 +105,9 @@ module.exports = NodeHelper.create({
             const basePath = baseURL.pathname.replace(/\/$/, ""); // Remove trailing slash if any
             authURL = `${baseURL.origin}${basePath}/auth`;
         } catch (e) {
-            Log.error(`${this.name}: Error constructing auth URL: ${e}`);
+            Log.error(
+                `${this.name} [${config.apiURL}]: Error constructing auth URL: ${e}`,
+            );
             return;
         }
 
@@ -121,9 +125,13 @@ module.exports = NodeHelper.create({
             }
             const data = await response.json();
             this.sidCache[config.apiURL] = data.session.sid;
-            Log.info(`${this.name}: Authenticated successfully. SID obtained.`);
+            Log.info(
+                `${this.name} [${config.apiURL}]: Authenticated successfully. SID obtained.`,
+            );
         } catch (error) {
-            Log.error(`${this.name}: Error during authentication: ${error}`);
+            Log.error(
+                `${this.name} [${config.apiURL}]: Error during authentication: ${error}`,
+            );
         }
     },
 
@@ -144,7 +152,7 @@ module.exports = NodeHelper.create({
             // If unauthorized, attempt to reauthenticate and retry once.
             if (response.status === 401) {
                 Log.warn(
-                    `${this.name}: Received 401 Unauthorized. Reauthenticating...`,
+                    `${this.name} [${config.apiURL}]: Received 401 Unauthorized. Reauthenticating...`,
                 );
                 await this.authenticate(config);
                 headers.sid = this.sidCache[config.apiURL]; // Update header with new SID.
@@ -153,7 +161,9 @@ module.exports = NodeHelper.create({
             }
 
             if (!response.ok) {
-                Log.error(`${this.name}: HTTP Error ${response.status}`);
+                Log.error(
+                    `${this.name} [${config.apiURL}]: HTTP Error ${response.status}`,
+                );
             }
 
             if (
@@ -168,11 +178,11 @@ module.exports = NodeHelper.create({
                 });
             } else {
                 Log.error(
-                    `${this.name}: Expected JSON but received ${response.headers.get("content-type")}`,
+                    `${this.name} [${config.apiURL}]: Expected JSON but received ${response.headers.get("content-type")}`,
                 );
             }
         } catch (error) {
-            Log.error(`${this.name}: ${error}`);
+            Log.error(`${this.name} [${config.apiURL}]: ${error}`);
         }
     },
 });
