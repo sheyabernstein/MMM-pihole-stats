@@ -90,8 +90,8 @@ Module.register("MMM-pihole-stats", {
 
             // Iterate over the array of client objects.
             this.top_sources.forEach((client) => {
-                let displayName = client.name;
-                if (this.config.showSourceHostnameOnly) {
+                let displayName = client.name || client.ip;
+                if (this.config.showSourceHostnameOnly && client.name) {
                     displayName = client.name.split("|")[0];
                 }
 
